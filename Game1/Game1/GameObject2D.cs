@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Game1
 {
-    class GameObject2D : GameObject
+    public class GameObject2D : GameObject
     {
         /// <summary>
         /// Whether the object should collide with anything.
@@ -74,8 +74,9 @@ namespace Game1
         }
 
         private Queue<GameObject2D> m_collisionEvents = new Queue<GameObject2D>();
+        public Queue<GameObject2D> collisionEvents { get { return m_collisionEvents; } }
 
-        const int COLTRIGGERSIZE = 1000;
+        public const int COLTRIGGERSIZE = 1000;
         Table<GameObject2D, Action<GameTime, GameObject2D, GameObject2D>> collisionTriggers = new Table<GameObject2D, Action<GameTime, GameObject2D, GameObject2D>>(COLTRIGGERSIZE);
         Table<string, Action<GameTime, GameObject2D, GameObject2D>> collisionTypeTriggers = new Table<string, Action<GameTime, GameObject2D, GameObject2D>>(COLTRIGGERSIZE);
         //Table<Creature, Action<GameTime, Creature, Creature>> creatureCollisionTriggers = new Table<Creature, Action<GameTime, Creature, Creature>>(COLTRIGGERSIZE);

@@ -3,13 +3,14 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 using System;
+using System.Collections.Generic;
 using HashTableProject;
 //using System.Diagnostics;
 
 namespace Game1
 {
 
-    
+
 
 
 
@@ -29,7 +30,7 @@ namespace Game1
         // Utility variables
         Vector2 baseVec = new Vector2(1, 1);
 
-        
+
         // Player vars
         float moveSpeed = 0.1f;
 
@@ -38,9 +39,13 @@ namespace Game1
 
         private Texture2D m_playerSpr;
 
+        public static Player player {get{ return m_player; } }
+
         // Screen
-        float m_screenHeight;
-        float m_screenWidth;
+        static float m_screenHeight;
+        static float m_screenWidth;
+        public static float screenHeight { get { return m_screenHeight; } }
+        public static float screenWidth { get { return m_screenWidth; } }
 
 
         // Objects
@@ -48,8 +53,13 @@ namespace Game1
         string playerStr = "player";
         string enemyStr = "enemy1";
 
-        private Player m_player = new Player("player","player",10);
+        private static Player m_player = new Player("player","player",10);
         private Enemy m_testEnemy = new Enemy("enemy1","enemy",10);
+        private HideLoc m_bush1 = new HideLoc("bush1", "hideloc", 0);
+        Scene m_scene1 = new Scene();
+
+        GameGrid m_grid;
+        Texture2D testSprite;
 
         // Textures
         Table<string, Texture2D> m_textures;
@@ -73,14 +83,18 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
+
+
+            //m_grid.
             Console.WriteLine("Initialising...");
             // TODO: Add your initialization logic here
 
             base.Initialize();
 
-            m_screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            m_screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            m_screenHeight = GraphicsDevice.Viewport.Bounds.Height;
+            m_screenWidth = GraphicsDevice.Viewport.Bounds.Width;
 
+            m_grid = new GameGrid(10, 10, 0.1f);
             // Load textures.
             m_texArray = new string[]
                 {
@@ -118,42 +132,53 @@ namespace Game1
 
             // Scene 1 init
             m_player.sprite = playerSprite;
-            m_player.pos2D = new Vector2(100, 100);//m_screenWidth / 2f, m_screenHeight / 2f);
+            m_player.pos2D = m_grid.GetPoint(0.5f, 0.5f); //m_screenWidth / 2f, m_screenHeight / 2f);
+            m_scene1.AddObject(m_player);
 
             m_testEnemy.sprite = playerSprite;
             m_testEnemy.pos2D = new Vector2(200, 200);
-
-
-            m_scene1.AddObject(m_player);
+            List<Vector2> patrolPath = new List<Vector2>();
+            patrolPath.Add(m_grid.GetPoint(0.1f, 0.1f));
+            patrolPath.Add(m_grid.GetPoint(0.1f, 0.5f));
+            patrolPath.Add(m_grid.GetPoint(0.2f, 0.3f));
+            m_testEnemy.patrolPath = patrolPath;
+            m_testEnemy.StartPatrol(0);
             m_scene1.AddObject(m_testEnemy);
 
-
-            m_player.AddCollisionTrigger(m_testEnemy, PlayerHitsEnemy);
-
-            //m_player.AddCollisionTrigger("enemy", PlayerHitsEnemy);
+            m_bush1.sprite = playerSprite;
+            m_scene1.AddObject(m_bush1);
 
 
+            //m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamage);
+
+            // m_player.AddCollisionTrigger(m_testEnemy, OtherTakesDamage);
+
+            m_testEnemy.AddCollisionTrigger(m_player, EnemyHitsPlayer);
 
 
 
             Console.WriteLine("Initialisation complete.");
 
         }
-
-        Texture2D testSprite;
-
-        void PlayerHitsEnemy(GameTime gameTime, GameObject2D player, GameObject2D other)
+        
+        void OtherTakesDamage(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
         {
-
-            ;
-            Console.WriteLine("Collision event triggered: Player hit enemy.");
+            
+            //Console.WriteLine("Collision event triggered: Player hit enemy.");
             other.sprite = testSprite;
-            other.RegisterHit(gameTime, 5);
+            other.RegisterHit(gameTime, 10);
         }
 
-        Scene m_scene1 = new Scene();
+        void EnemyHitsPlayer(GameTime gameTime, Enemy thisobj, GameObject2D other)
+        {
 
-        
+            //Console.WriteLine("Collision event triggered: Player hit enemy.");
+            other.sprite = testSprite;
+            other.RegisterHit(gameTime, 10);
+            thisobj.SetEnemyState(Enemy.EnemyState.patrolling);
+            
+        }
+
 
 
         Table<string,Texture2D> LoadTextures(string[] tex, string dir)

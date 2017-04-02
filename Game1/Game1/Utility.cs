@@ -17,6 +17,8 @@ namespace Game1
             y = y1;
         }
 
+        
+
         public Vector2 xnaVec
         {
             get { return new Vector2(x, y); }

@@ -4,7 +4,7 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/elizabeth/Documents/Visual Studio 2015/Projects/Game1/Game1/Content/textures/abc.bmp</File>
-    <File>C:/Users/elizabeth/Documents/Visual Studio 2015/Projects/Game1/Game1/Content/textures/player.bmp</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/abc.bmp</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/player.bmp</File>
   </SourceFiles>
 </SourceFileCollection>

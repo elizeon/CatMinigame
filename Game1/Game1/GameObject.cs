@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Game1
 {
-    class GameObject
+    public class GameObject
     {
         private Vector3 pos = new Vector3 (0,0,0);
         public Vector2 pos2D
