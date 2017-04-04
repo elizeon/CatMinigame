@@ -5,6 +5,9 @@
   <Config />
   <SourceFiles>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/abc.bmp</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/birds.png</File>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/player.bmp</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/quendaspritesheet1.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/quendaspritesheet2.png</File>
   </SourceFiles>
 </SourceFileCollection>

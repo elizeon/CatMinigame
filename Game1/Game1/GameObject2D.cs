@@ -10,6 +10,25 @@ namespace Game1
 {
     public class GameObject2D : GameObject
     {
+
+        //public Dictionary<string,bool> states { get; set; }
+        public AnimatedSprite animSprite { get; set; }
+
+        public Dictionary<string, AnimatedSprite> animSprites { get; }
+
+        public void AddAnimSprite(string key, AnimatedSprite sprite)
+        {
+            animSprites[key] = sprite;
+            if(defaultAnim ==null)
+            {
+                defaultAnim = key;
+            }
+        }
+        /// <summary>
+        /// Default AnimatedSprite to revert to once finished playing a temp animation.
+        /// If null, will be set to the first AnimatedSprite you add.
+        /// </summary>
+        public string defaultAnim { get; set; }
         /// <summary>
         /// Whether the object should collide with anything.
         /// </summary>
@@ -23,7 +42,7 @@ namespace Game1
         /// </summary>
         public bool active = true;
 
-        public float maxHP =0;
+        public float maxHP = 0;
 
         private string m_type;
         public string type
@@ -40,37 +59,44 @@ namespace Game1
         }
 
         /// <summary>
-        /// 
+        /// Constructor with HP. Makes new object with given HP. (0 if invincible)
         /// </summary>
         /// <param name="newid">Unique string ID of object.</param>
         /// <param name="newtype">Type of object, eg. enemy, NPC.</param>
         /// <param name="maxHP">Object's max HP. 0 if invincible object.</param>
-        public GameObject2D(string newid, string newtype, float maxHP)
+        public GameObject2D(string newid, string newtype, float maxHP) : this(newid, newtype)
         {
-            m_id = newid;
-            m_type = newtype;
             hp = maxHP;
         }
 
+        /// <summary>
+        /// Basic constructor. Makes new object with 0 (invincible) HP.
+        /// </summary>
+        /// <param name="newid">Unique string ID of object.</param>
+        /// <param name="newtype">Type of object, eg. enemy, NPC.</param>
         public GameObject2D(string newid, string newtype)
         {
+            animSprites = new Dictionary<string, AnimatedSprite>();
+            
+            animSprites["default"] = new AnimatedSprite(null, 1, 1);
+            animSprite = animSprites["default"];
             m_id = newid;
             m_type = newtype;
+            hp = 0;
         }
 
 
-        private Vector2 m_scale = new Vector2(1,1);
+        private Vector2 m_scale = new Vector2(1, 1);
+        /// <summary>
+        /// Scale of the object. Assumes that sprites in animation set for this object are uniform and do not require individual scaling.
+        /// </summary>
+        public Vector2 scale { get { return m_scale; } set { m_scale = value; } }
+
         private float m_rotation = 0;
         public float rotation
         {
             get { return m_rotation; }
             set { m_rotation = value; }
-        }
-        private Texture2D m_sprite;
-        public Texture2D sprite
-        {
-            get { return m_sprite; }
-            set { m_sprite = value; }
         }
 
         private Queue<GameObject2D> m_collisionEvents = new Queue<GameObject2D>();
@@ -103,12 +129,12 @@ namespace Game1
         {
             if (collisionTriggers.ContainsKey(otherObj))
             {
-                collisionTriggers.Get(otherObj).DynamicInvoke(gameTime,this, otherObj);
+                collisionTriggers.Get(otherObj).DynamicInvoke(gameTime, this, otherObj);
             }
 
             if (collisionTypeTriggers.ContainsKey(otherObj.type))
             {
-                collisionTriggers.Get(otherObj).DynamicInvoke(gameTime,this, otherObj);
+                collisionTriggers.Get(otherObj).DynamicInvoke(gameTime, this, otherObj);
             }
         }
 
@@ -128,25 +154,62 @@ namespace Game1
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            for(int i=0; i< m_collisionEvents.Count;i++)
+            /*
+            if(!animSprite.playing)
             {
-                ProcessCollisionEvent(gameTime, m_collisionEvents.Dequeue());
+                SetAnim(defaultAnim);
+                animSprite.playing = true;
             }
+            else
+            {
+            */
+                animSprite.Update(gameTime);
+                for (int i = 0; i < m_collisionEvents.Count; i++)
+                {
+                    ProcessCollisionEvent(gameTime, m_collisionEvents.Dequeue());
+                }
+            //}
+            
 
 
         }
 
-        
-
-        
-
-        public void Render(SpriteBatch sprBatch)
+        /// <summary>
+        /// Set the animation to that with the string key given.
+        /// </summary>
+        /// <param name="anim">String key of animation to set the object to.</param>
+        public void SetAnim(string anim)
         {
-            if(sprite!=null)
+            if (animSprites.ContainsKey(anim))
             {
-                Render2D.DrawSpriteAtLocation(sprBatch, this.sprite, this.pos2D, this.rotation, m_scale);
+                animSprite = animSprites[anim];
             }
-            
+
+        }
+
+        
+        /// <summary>
+        /// Play animation of this string once, then revert to default.
+        /// </summary>
+        /// <param name="anim">String key of animation to set the object to.</param>
+        public void PlayAnim(string anim)
+        {
+            if (animSprites.ContainsKey(anim))
+            {
+                animSprite = animSprites[anim];
+                animSprite.PlayOnce();
+            }
+
+        }
+
+
+        public virtual void Render(SpriteBatch sprBatch)
+        {
+            if (animSprite != null)
+            {
+                animSprite.Draw(sprBatch, pos2D, rotation, scale);
+            }
+
         }
 
         public Rectangle boundingBox
@@ -155,19 +218,24 @@ namespace Game1
             get
             {
 
-                if(sprite != null)
+                if (animSprite != null)
                 {
-                    return new Rectangle((int)pos2D.X, (int)pos2D.Y, sprite.Width, sprite.Height);
+
+                    Vector2 spriteSize = new Vector2((int)(animSprite.width / (1 / scale.X)), (int)(animSprite.height / (1 / scale.Y)));
+                    
+
+                    return new Rectangle((int)pos2D.X, (int)pos2D.Y, (int)spriteSize.X, (int)spriteSize.Y);
                 }
                 else
                 {
                     return new Rectangle();
                 }
-                
+
 
             }
 
         }
+
 
 
 
@@ -179,7 +247,7 @@ namespace Game1
         public System.TimeSpan lastTimeHitTaken;
 
 
-        
+
 
         public void RegisterHit(GameTime gameTime, float hpTaken)
         {
@@ -195,12 +263,12 @@ namespace Game1
         public void TakeDamage(float hpTaken)
         {
             hp -= hpTaken;
-            if(hp<=0)
+            if (hp <= 0)
             {
                 TriggerDeath();
             }
         }
-        
+
 
         /// <summary>
         /// TODO actually destroy object.

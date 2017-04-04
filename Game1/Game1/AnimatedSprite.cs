@@ -8,15 +8,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Game1
 {
-    class AnimatedSprite
+    public class AnimatedSprite
     {
         public Texture2D texture { get; set; }
         public int rows { get; set; }
         public int columns { get; set; }
         public int startIndex { get; set; }
         public int endIndex { get; set; }
-        public bool flipHorizontal { get; set; }
-        public bool flipVertical { get; set; }
+        private bool flipHorizontal;
+        private bool flipVertical;
 
         public float width
         {
@@ -41,10 +41,23 @@ namespace Game1
         int totalFrames;
         public float playSpeed { get; set;}
         float totalTime = 0;
+        bool playingTempAnim = false;
+        
+        public void PlayOnce()
+        {
+            playingTempAnim = true;
+            playing = true;
+        }
+
+        public void Play()
+        {
+            playing = true;
+        }
 
         public AnimatedSprite(AnimatedSprite animToCopy) : this(animToCopy.texture,animToCopy.rows,animToCopy.columns,animToCopy.startIndex,animToCopy.endIndex)
         {
-
+            this.flipHorizontal = animToCopy.flipHorizontal;
+            this.flipVertical = animToCopy.flipVertical;
         }
 
         /// <summary>
@@ -74,6 +87,7 @@ namespace Game1
         /// <param name="nEndIndex">Index of the last sprite of the animation in the given sprite sheet.</param>
         public AnimatedSprite(Texture2D image, int imagerows, int imagecolumns, int nStartIndex, int nEndIndex) : this(image,imagerows,imagecolumns)
         {
+            startIndex = nStartIndex;
             if(endIndex > totalFrames)
             {
                 endIndex = totalFrames;
@@ -88,7 +102,7 @@ namespace Game1
         }
 
         /// <summary>
-        /// Basic constructor, bare minimum. The animation will use all sprites in the image.
+        /// Basic constructor, bare minimum for an animated sprite. The animation will use all sprites in the image.
         /// Each square formed by the grid of rows and columns is considered a sprite.
         /// </summary>
         /// <param name="image">Full sprite sheet containing the animation.</param>
@@ -96,6 +110,7 @@ namespace Game1
         /// <param name="imagecolumns">Number of columns in the sprite sheet image</param>
         public AnimatedSprite(Texture2D image, int imagerows, int imagecolumns)
         {
+            playing = true;
             flipHorizontal = false;
             flipVertical = false;
 
@@ -111,18 +126,55 @@ namespace Game1
 
 
         }
+
+        /// <summary>
+        /// Basic constructorfor a static sprite.
+        /// </summary>
+        /// <param name="image">Image for the sprite.</param>
+        public AnimatedSprite(Texture2D image)
+        {
+            playing = true;
+            flipHorizontal = false;
+            flipVertical = false;
+
+            playSpeed = 1;
+            texture = image;
+            rows = 1;
+            columns = 1;
+            startIndex = 0;
+            currentFrame = startIndex;//(int)startLoc.X+(int)startLoc.Y*ncolumns;
+
+            totalFrames = rows * columns;
+            endIndex = totalFrames;
+        }
+
+        public bool playing { get; set; }
+
         public void Update(GameTime gameTime)
         {
             totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds /100;
-            if (totalTime > (1/playSpeed))
+            if (totalTime > (1 / playSpeed))// && playing)
             {
                 currentFrame++;
-                if (currentFrame == endIndex)
-                    currentFrame = 0;
                 totalTime = 0;
-            }
+                if (currentFrame == endIndex)
+                {
+                    /*if(!playingTempAnim)
+                    {*/
+                    currentFrame = startIndex;
+                    /*
+                        }
+                    else
+                        {
+                            playing = false;
+                            playingTempAnim = false;
+                        }
+                        */
 
-            
+                    
+                }
+
+            }
         }
         public void Draw(SpriteBatch spriteBatch, Vector2 location, float rotation, Vector2 scale)
         {
@@ -157,7 +209,7 @@ namespace Game1
                 
 
 
-                Render2D.DrawSpriteAtRect(spriteBatch, texture, destinationRectangle, sourceRectangle, rotation, scale, myEffect);
+                Render2D.Instance.DrawSpriteAtRect(spriteBatch, texture, destinationRectangle, sourceRectangle, rotation, scale, myEffect);
                 
             }
             

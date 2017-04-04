@@ -20,11 +20,29 @@ namespace Game1
         }
 
 
+        Table<string, Action<GameTime, Player, GameObject2D>> collisionTriggersWithThisType = new Table<string, Action<GameTime, Player, GameObject2D>>(COLTRIGGERSIZE);
+        
+
+        public void AddCollisionTrigger(string objType, Action<GameTime, Player, GameObject2D> method)
+        {
+            collisionTriggersWithThisType.Add(objType, method);
+        }
+
+        public void ProcessCollisionEventPlayer(GameTime gameTime, GameObject2D otherObj)
+        {
+            if (collisionTriggersWithThisType.ContainsKey(otherObj.type))
+            {
+                collisionTriggersWithThisType.Get(otherObj.type).DynamicInvoke(gameTime, this, otherObj);
+            }
+        }
 
         public override void Update(GameTime gameTime)
         {
 
-
+            for (int i = 0; i < collisionEvents.Count; i++)
+            {
+                ProcessCollisionEventPlayer(gameTime, collisionEvents.Dequeue());
+            }
             // Player input
 
             var state = Input.keyState;
@@ -34,27 +52,48 @@ namespace Game1
             if (state.IsKeyDown(Input.Controls.goUp))
             {
                 pos2D += new Vector2(0, -m_moveSpeed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                // do something here
+                if (animSprite != animSprites["runUp"])
+                {
+                    animSprite = animSprites["runUp"];
+                }
             }
 
             if (state.IsKeyDown(Input.Controls.goLeft))
             {
                 pos2D += new Vector2(-m_moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                // do something here
+                if (animSprite != animSprites["runLeft"])
+                {
+                    animSprite = animSprites["runLeft"];
+                }
+
             }
 
             if (state.IsKeyDown(Input.Controls.goRight))
             {
                 pos2D += new Vector2(m_moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                // do something here
+
+                if (animSprite != animSprites["runRight"])
+                {
+                    animSprite = animSprites["runRight"];
+                }
             }
 
             if (state.IsKeyDown(Input.Controls.goDown))
             {
                 pos2D += new Vector2(0, m_moveSpeed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                // do something here
+                if (animSprite != animSprites["runDown"])
+                {
+                    animSprite = animSprites["runDown"];
+                }
             }
 
+            if (!state.IsKeyDown(Input.Controls.goUp) && !state.IsKeyDown(Input.Controls.goDown) && !state.IsKeyDown(Input.Controls.goLeft) && !state.IsKeyDown(Input.Controls.goRight))
+            {
+                if (animSprite != animSprites["idle"])
+                {
+                    animSprite = animSprites["idle"];
+                }
+            }
             // Player combat
 
             // Hiding
@@ -68,7 +107,7 @@ namespace Game1
                 {
                     case "hideloc":
                         {
-                            hiding = true;
+                            tohide = true;
                             break;
                         }
                         /*
@@ -81,11 +120,21 @@ namespace Game1
                         
                 }
                 
+             
                 
-                hiding = false;
                 toReturn.Add(val);
             }
-            for(int i=0;i<toReturn.Count;i++)
+
+            if (tohide)
+            {
+                hiding = true;
+            }
+            else
+            {
+                hiding = false;
+            }
+
+            for (int i=0;i<toReturn.Count;i++)
             {
                 collisionEvents.Enqueue(toReturn[i]);
             }

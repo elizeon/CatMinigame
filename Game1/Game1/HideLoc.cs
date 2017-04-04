@@ -12,5 +12,18 @@ namespace Game1
         {
 
         }
+
+        public HideLoc(HideLoc otherloc) : this(otherloc.id,otherloc.type,otherloc.hp)
+        {
+            this.scale = otherloc.scale;
+            this.animSprite = new AnimatedSprite(otherloc.animSprite);
+        }
+
+        public HideLoc(string newid, HideLoc otherloc) : this(otherloc.id, otherloc.type, otherloc.hp)
+        {
+            this.id = newid;
+            this.scale = otherloc.scale;
+            this.animSprite = new AnimatedSprite(otherloc.animSprite);
+        }
     }
 }

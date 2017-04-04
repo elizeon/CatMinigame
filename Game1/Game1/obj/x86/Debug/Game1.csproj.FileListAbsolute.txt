@@ -48,3 +48,6 @@ C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debu
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\SharpDX.XInput.xml
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.csprojResolveAssemblyReference.cache
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\birds.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet1.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet2.xnb

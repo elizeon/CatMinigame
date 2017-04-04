@@ -11,6 +11,12 @@ namespace Game1
     class Enemy : GameObject2D
     {
 
+        public override void Render(SpriteBatch sprBatch)
+        {
+            base.Render(sprBatch);
+            Render2D.Instance.DrawRectangle(sprBatch, viewCone[0], Color.White);
+        }
+
         private List<Vector2> m_patrolPath = new List<Vector2>();
         public List<Vector2> patrolPath { set { m_patrolPath = value; } get { return m_patrolPath; } }
 
@@ -22,6 +28,7 @@ namespace Game1
         //public EnemyState enemyState { get { return m_enemyState; }set { m_enemyState = value; } }
         public void SetEnemyState(EnemyState istate)
         {
+            Console.WriteLine("Enemy state changed.");
             m_enemyState = istate;
             if (istate == EnemyState.patrolling)
             {
@@ -54,23 +61,21 @@ namespace Game1
             }
         }
 
+        private List<Rectangle> m_viewCone = new List<Rectangle>();
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
 
-            if (m_enemyState == EnemyState.patrolling)
+                if (m_enemyState == EnemyState.patrolling)
             {
                 if (_2DUtil.CheckCollision(Game1.player.boundingBox, viewCone[0]) && !Game1.player.hiding)
                 {
                     SetEnemyState(EnemyState.chasing);
                 }
             }
-
-
-
-
-
+            
             for (int i = 0; i < collisionEvents.Count; i++)
             {
                 ProcessCollisionEventEnemy(gameTime, collisionEvents.Dequeue());
@@ -112,6 +117,7 @@ namespace Game1
                 {
                     rotation = _2DUtil.LookAt(this.pos2D, Game1.player.pos2D);
                     m_direction = Game1.player.pos2D - this.pos2D;
+                    m_direction.Normalize();
                     _2DUtil.MoveTowards(this, Game1.player.pos2D, (float)gameTime.ElapsedGameTime.TotalMilliseconds * m_moveSpeed);
                 }
             }
@@ -126,26 +132,51 @@ namespace Game1
             Vector2 dest = m_patrolPath[patrolIndex];
 
             rotation = _2DUtil.LookAt(source, dest);
+            m_direction = dest - this.pos2D;
+            m_direction.Normalize();
         }
 
-        private float m_viewDist = 100;
-
+        private float m_viewDist = 4f;
+        //todo must be rotating rectangle...
         public List<Rectangle> viewCone
         {
             get
             {
 
-                if (sprite != null)
+
+                if (animSprite != null)
                 {
+
+                    //Vector2 spriteSize = new Vector2((int)(animSprite.width / (1 / scale.X)), (int)(animSprite.height / (1 / scale.Y)));
                     //Vector2 direction = dest - source;
 
                     Vector2 distdir = new Vector2(m_direction.X * m_viewDist, m_direction.Y * m_viewDist);
-                    return new List<Rectangle> { new Rectangle((int)pos2D.X, (int)pos2D.Y, sprite.Width * 2, sprite.Height * 4) };
+                    //Rectangle rect1 = new Rectangle((int)pos2D.X - (int)(spriteSize.X/2), (int)pos2D.Y - (int)(spriteSize.Y / 2), ((int)pos2D.X + (int)(spriteSize.X / 2)) * (int)distdir.X, ((int)pos2D.Y + (int)(spriteSize.Y / 2)) * (int)distdir.Y);
+
+                    //int w = (int)(spriteSize.X * m_viewDist);
+                    //int h = (int)(spriteSize.Y * m_viewDist);
+                    int w = 100;
+                    int h = 100;
+                    //Rectangle rect1 = new Rectangle((int)(pos2D.X - (spriteSize.X / 2)), (int)(pos2D.Y - (spriteSize.Y / 2)), w, h);
+                    Rectangle rect1 = new Rectangle((int)(pos2D.X ), (int)(pos2D.Y), w, h);
+
+                    if (m_viewCone.Count > 0)
+                    {
+                        m_viewCone[0] = rect1;
+                    }
+                    else
+                    {
+                        m_viewCone.Add(rect1);
+                    }
+
+                    return m_viewCone;
                 }
                 else
-                {
-                    return new List<Rectangle> { new Rectangle() };
-                }
+                    return null;
+                
+
+                    
+                
 
             }
         }

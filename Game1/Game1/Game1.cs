@@ -19,6 +19,7 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
+        
 
         // Content directories
 
@@ -49,13 +50,8 @@ namespace Game1
 
 
         // Objects
-
-        string playerStr = "player";
-        string enemyStr = "enemy1";
-
         private static Player m_player = new Player("player","player",10);
-        private Enemy m_testEnemy = new Enemy("enemy1","enemy",10);
-        private HideLoc m_bush1 = new HideLoc("bush1", "hideloc", 0);
+        
         Scene m_scene1 = new Scene();
 
         GameGrid m_grid;
@@ -63,10 +59,7 @@ namespace Game1
 
         // Textures
         Table<string, Texture2D> m_textures;
-
-        int m_texLength = 0;
-
-
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -83,102 +76,183 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-
-
-            //m_grid.
+            
             Console.WriteLine("Initialising...");
-            // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            Render2D.Instance.Init(GraphicsDevice);
 
             m_screenHeight = GraphicsDevice.Viewport.Bounds.Height;
             m_screenWidth = GraphicsDevice.Viewport.Bounds.Width;
 
             m_grid = new GameGrid(10, 10, 0.1f);
             // Load textures.
+            // Load textures.
             m_texArray = new string[]
                 {
                     "player",
-                    "abc"
-
+                    "abc",
+                    "quendaspritesheet1",
+                    "quendaspritesheet2"
                 };
             m_textures = LoadTextures(m_texArray, texDir);
 
             // Initialise objects.
             World.player = m_player;
 
-            Texture2D playerSprite;
             if (!m_textures.ContainsKey(texDir + "player"))
             {
                 Console.WriteLine("No player tex in map");
-                
+
             }
-            
-            if (!m_textures.ContainsKey(texDir + "abc"))
-            {
-                Console.WriteLine("No test tex in map");
-                
-            }
-
-            playerSprite = m_textures.Get(texDir + "player");
-
-            testSprite = m_textures.Get(texDir + "abc");
-
 
 
 
             testSprite = m_textures.Get(texDir + "abc");
+
 
 
             // Scene 1 init
-            m_player.sprite = playerSprite;
-            m_player.pos2D = m_grid.GetPoint(0.5f, 0.5f); //m_screenWidth / 2f, m_screenHeight / 2f);
+            Texture2D quendaSpritesLR = m_textures.Get(texDir + "quendaspritesheet1");
+            Texture2D quendaSpritesUD = m_textures.Get(texDir + "quendaspritesheet2");
+            AnimatedSprite playerRunUp = new AnimatedSprite(quendaSpritesUD, 1, 4);
+            AnimatedSprite playerRunLeft = new AnimatedSprite(quendaSpritesLR, 5, 2, 0, 5);
+            playerRunLeft.FlipHorizontal(true);
+            AnimatedSprite playerRunDown = new AnimatedSprite(quendaSpritesUD, 1, 4);
+            playerRunDown.FlipVertical(true);
+            AnimatedSprite playerRunRight = new AnimatedSprite(quendaSpritesLR, 5, 2, 0, 5);
+
+            m_player.scale = new Vector2(0.1f, 0.1f);
+            AnimatedSprite playerIdle = new AnimatedSprite(m_textures.Get(texDir + "quendaspritesheet1"), 5, 2, 0, 1);
+
+            m_player.AddAnimSprite("runUp", playerRunUp);
+            m_player.AddAnimSprite("runLeft", playerRunLeft);
+            m_player.AddAnimSprite("runDown", playerRunDown);
+            m_player.AddAnimSprite("runRight", playerRunRight);
+            m_player.AddAnimSprite("idle", playerIdle);
+            m_player.SetAnim("idle");
+            m_player.defaultAnim = "idle";
+            m_player.pos2D = m_grid.GetPoint(0.5f, 0.5f);
+
             m_scene1.AddObject(m_player);
 
-            m_testEnemy.sprite = playerSprite;
-            m_testEnemy.pos2D = new Vector2(200, 200);
+            Enemy m_testEnemy = new Enemy("enemy1", "enemy", 10);
+            
+
+            AnimatedSprite enemyIdle = new AnimatedSprite(quendaSpritesUD, 1, 4);
+
+
+            m_testEnemy.scale = new Vector2(0.1f, 0.1f);
+            m_testEnemy.AddAnimSprite("idle", enemyIdle);
+            m_testEnemy.SetAnim("idle");
+            m_testEnemy.defaultAnim = "idle";
+            m_testEnemy.pos2D = m_grid.GetPoint(0.2f, 0.2f);
+            
+
             List<Vector2> patrolPath = new List<Vector2>();
             patrolPath.Add(m_grid.GetPoint(0.1f, 0.1f));
             patrolPath.Add(m_grid.GetPoint(0.1f, 0.5f));
             patrolPath.Add(m_grid.GetPoint(0.2f, 0.3f));
+            patrolPath.Add(m_grid.GetPoint(0.5f, 0.7f));
+            patrolPath.Add(m_grid.GetPoint(0.6f, 0.7f));
+            patrolPath.Add(m_grid.GetPoint(0.9f, 0.8f));
             m_testEnemy.patrolPath = patrolPath;
             m_testEnemy.StartPatrol(0);
+            m_testEnemy.SetEnemyState(Enemy.EnemyState.patrolling);
+
             m_scene1.AddObject(m_testEnemy);
 
-            m_bush1.sprite = playerSprite;
+
+            //GameObject2D m_collisionTest = new GameObject2D("col", "col", 0);
+
+            HideLoc m_bush1 = new HideLoc("bush1", "hideloc", 0);
+            HideLoc m_bush2 = new HideLoc("bush2", "hideloc", 0);
+            HideLoc m_bush3 = new HideLoc("bush3", "hideloc", 0);
+            HideLoc m_bush4 = new HideLoc("bush4", "hideloc", 0);
+            HideLoc m_bush5 = new HideLoc("bush5", "hideloc", 0);
+
+            m_bush1.AddAnimSprite("idle", playerRunLeft);
+            m_bush1.scale = new Vector2(0.1f, 0.1f);
+            m_bush1.SetAnim("idle");
+
+            m_bush1.pos2D = m_grid.GetPoint(0.9f, 0.2f);
+
+            m_bush2 = new HideLoc("bush2", m_bush1);
+            m_bush2.pos2D = m_grid.GetPoint(0.9f, 0.9f);
+
+            m_bush3 = new HideLoc("bush3", m_bush1);
+            m_bush3.pos2D = m_grid.GetPoint(0.4f, 0.7f);
+
+            m_bush4 = new HideLoc("bush4", m_bush1);
+            m_bush4.pos2D = m_grid.GetPoint(0.7f, 0.2f);
+       
+            m_bush5 = new HideLoc("bush5", m_bush1);
+            m_bush5.pos2D = m_grid.GetPoint(0.3f, 0.56f);
+
             m_scene1.AddObject(m_bush1);
+            m_scene1.AddObject(m_bush2);
+            m_scene1.AddObject(m_bush3);
+            m_scene1.AddObject(m_bush4);
+            m_scene1.AddObject(m_bush5);
 
+            m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamage);
 
-            //m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamage);
+            GameObject2D m_end = new GameObject2D("end", "end");
+            m_end.pos2D = m_grid.GetPoint(0.99f, 0.5f);
+            //m_end.SetCustomBoundingBox(new Rectangle(new Point((int)m_end.pos2D.X, (int)m_end.pos2D.X), new Point((int)m_end.pos2D.X + 100, (int)m_end.pos2D.X + 100)));
+            m_player.AddCollisionTrigger(m_end, PassLevel);
+
+            //m_player.AddCollisionTrigger("hideloc", PlayerHides);
 
             // m_player.AddCollisionTrigger(m_testEnemy, OtherTakesDamage);
 
-            m_testEnemy.AddCollisionTrigger(m_player, EnemyHitsPlayer);
+            //m_testEnemy.AddCollisionTrigger(m_player, EnemyHitsPlayer);
 
 
+
+
+
+
+
+            m_textures = LoadTextures(m_texArray, texDir);
 
             Console.WriteLine("Initialisation complete.");
 
         }
-        
+        int m_levelsPassed = 0;
+        int m_totalLevels = 1;
+
+        void PassLevel(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
+        {
+
+            Console.WriteLine("You have completed the level!");
+            m_levelsPassed += 1;
+            if(m_levelsPassed>=m_totalLevels)
+            {
+                Win(gameTime, thisobj, other);
+            }
+        }
+
+        void Win(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
+        {
+            Console.WriteLine("You have won!");
+        }
+
         void OtherTakesDamage(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
         {
-            
+
             //Console.WriteLine("Collision event triggered: Player hit enemy.");
-            other.sprite = testSprite;
+            
             other.RegisterHit(gameTime, 10);
         }
 
-        void EnemyHitsPlayer(GameTime gameTime, Enemy thisobj, GameObject2D other)
+        /*
+        void PlayerHides(GameTime gameTime, Player thisobj, GameObject2D other)
         {
-
-            //Console.WriteLine("Collision event triggered: Player hit enemy.");
-            other.sprite = testSprite;
-            other.RegisterHit(gameTime, 10);
-            thisobj.SetEnemyState(Enemy.EnemyState.patrolling);
-            
+            player.hiding = true;
         }
-
+        */
 
 
         Table<string,Texture2D> LoadTextures(string[] tex, string dir)
