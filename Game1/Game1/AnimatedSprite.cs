@@ -20,10 +20,20 @@ namespace Game1
 
         public float width
         {
+
             get
             {
-                int mwidth = texture.Width / columns;
-                return mwidth;
+               
+                if (texture != null)
+                {
+                    int mwidth = texture.Width / columns;
+                    return mwidth;
+                }
+                else
+                {
+                    return 0;
+                }
+
             }
         }
 
@@ -31,10 +41,19 @@ namespace Game1
         {
             get
             {
-                int mheight = texture.Height / rows;
-                return mheight;
+                if (texture != null)
+                {
+                    int mheight = texture.Height / rows;
+                    return mheight;
+                }
+                else
+                {
+                    return 0;
+                }
+
             }
         }
+
 
 
         int currentFrame;
@@ -185,9 +204,11 @@ namespace Game1
                 int row = (int)((float)currentFrame / (float)columns);
                 int column = currentFrame % columns;
 
+                // partial rectangle
                 Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
 
-                Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
+                // rectangle to draw on
+                Rectangle destinationRectangle = new Rectangle((int)(location.X), (int)(location.Y), (int)(width*scale.X), (int)(height*scale.Y));
 
                 SpriteEffects myEffect = SpriteEffects.None;
                 if (flipHorizontal)
@@ -206,10 +227,28 @@ namespace Game1
                         myEffect = SpriteEffects.FlipVertically;
                     }
                 }
+
+
+                //origin = new Vector2(destinationRectangle.Center.X,destinationRectangle.Center.y);
+                /*
+                Vector2 origin;
                 
+                if(centre)
+                {
+                    origin = new Vector2((int)(destinationRectangle.X  * scale.X), (int)(destinationRectangle.Y* scale.Y));
+                    //origin = new Vector2(destinationRectangle.X/2, destinationRectangle.Y);
+
+                    //origin = new Vector2(400,400);
+                    //origin = new Vector2(0, 0);
+                }
+                else
+                {
+                    origin = new Vector2(0, 0);
+                }
+                */
 
 
-                Render2D.Instance.DrawSpriteAtRect(spriteBatch, texture, destinationRectangle, sourceRectangle, rotation, scale, myEffect);
+                Render2D.Instance.DrawSpriteAtRect(spriteBatch, texture, destinationRectangle, sourceRectangle, rotation, scale, myEffect,location);
                 
             }
             

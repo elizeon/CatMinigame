@@ -37,26 +37,31 @@ namespace Game1
             // 45 degrees ((float) Math.PI)
 
         }
+        
 
-        public void DrawSpriteAtRect(SpriteBatch spriteBatch, Texture2D sprite, Rectangle dest, Rectangle source, float rotation, Vector2 scale)
+        public void DrawSpriteAtRect(SpriteBatch spriteBatch, Texture2D sprite, Rectangle dest, Rectangle source, float rotation, Vector2 scale, SpriteEffects effect,Vector2 location)
         {
             // todo does not apply rotation or scale
             //dest = new Rectangle(dest.Location,new Point((int)dest.Size.X * (int)scale.X,(int)dest.Size.Y*(int)scale.Y));
-            dest = new Rectangle(dest.Location, new Point(dest.Size.X / (int)(1 / scale.X), dest.Size.Y / (int)(1 / scale.Y)));
+            //dest = new Rectangle(dest.Location, new Point((int)(dest.Size.X *  scale.X), (int)(dest.Size.Y *  scale.Y)));
 
-            spriteBatch.Draw(sprite, dest, source, Color.White);
+            //dest = new Rectangle((int)(location.X + dest.Size.X / 2 * scale.X), (int)(location.Y + dest.Size.Y / 2 * scale.Y), (int)(dest.Size.X * scale.X), (int)(dest.Size.Y * scale.Y));
 
-        }
+            //Console.WriteLine("Sprite drawn at " + location.X, ", " + location.Y);
+
+            //dest = new Rectangle((int)(location.X), (int)(location.Y), (int)(location.X+scale.X*dest.Width), (int)(location.Y+scale.Y*dest.Height));
+
+            //spriteBatch.Draw(sprite, dest, Color.White);
+
+            //spriteBatch.Draw(sprite, dest, source, Color.White, 0, new Vector2(dest.Location.X + (dest.Size.X / 2), dest.Location.Y + (dest.Size.Y / 2)), effect, 0f);
 
 
-        public void DrawSpriteAtRect(SpriteBatch spriteBatch, Texture2D sprite, Rectangle dest, Rectangle source, float rotation, Vector2 scale, SpriteEffects effect)
-        {
-            // todo does not apply rotation or scale
-            //dest = new Rectangle(dest.Location,new Point((int)dest.Size.X * (int)scale.X,(int)dest.Size.Y*(int)scale.Y));
-            dest = new Rectangle(dest.Location, new Point(dest.Size.X / (int)(1 / scale.X), dest.Size.Y / (int)(1 / scale.Y)));
+            //spriteBatch.Draw(sprite, dest, source, Color.White, 0, location, effect, 0f);
 
-            spriteBatch.Draw(sprite, dest, source, Color.White, 0, new Vector2(dest.Location.X + (dest.Size.X / 2), dest.Location.Y + (dest.Size.Y / 2)), effect, 0f);
+            //origin = new Vector2(origin.X+source.X/2,origin.Y+source.Y/2);
+            Vector2 origin = new Vector2(0,0);
 
+            spriteBatch.Draw(sprite, dest, source, Color.White, 0, origin, effect, 0);
 
         }
 
@@ -64,6 +69,7 @@ namespace Game1
         {
 
 
+            //Console.WriteLine("Rectangle drawn at " + r.Location.X, ", " + r.Location.Y);
             var t = new Texture2D(m_graphicsDevice, 1, 1);
             t.SetData(new[] { Color.White });
             //spriteBatch.Draw(t, rect, Color.Black);

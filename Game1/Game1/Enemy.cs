@@ -13,8 +13,14 @@ namespace Game1
 
         public override void Render(SpriteBatch sprBatch)
         {
-            base.Render(sprBatch);
-            Render2D.Instance.DrawRectangle(sprBatch, viewCone[0], Color.White);
+            if (visible)
+            {
+                viewCone.Draw(Game1.whiteTex, sprBatch);
+
+                base.Render(sprBatch);
+                //Render2D.Instance.DrawRectangle(sprBatch, viewCone[0], Color.White);
+                Render2D.Instance.DrawRectangle(sprBatch, new Rectangle((int)pos2D.X, (int)pos2D.Y, 10, 10), Color.White);
+            }
         }
 
         private List<Vector2> m_patrolPath = new List<Vector2>();
@@ -28,7 +34,7 @@ namespace Game1
         //public EnemyState enemyState { get { return m_enemyState; }set { m_enemyState = value; } }
         public void SetEnemyState(EnemyState istate)
         {
-            Console.WriteLine("Enemy state changed.");
+            Console.WriteLine("Enemy state changed to "+istate);
             m_enemyState = istate;
             if (istate == EnemyState.patrolling)
             {
@@ -46,6 +52,7 @@ namespace Game1
         public Enemy(string newid, string newtype, float newhp) : base(newid, newtype, newhp)
         {
             SetEnemyState(EnemyState.patrolling);
+            viewRange = new Vector2(200, 100);
         }
 
         public void AddCollisionTrigger(GameObject2D objType, Action<GameTime, Enemy, GameObject2D> method)
@@ -61,16 +68,46 @@ namespace Game1
             }
         }
 
-        private List<Rectangle> m_viewCone = new List<Rectangle>();
+        //private List<Rectangle> m_viewCone = new List<Rectangle>();
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
 
-                if (m_enemyState == EnemyState.patrolling)
+            if(rotation != targetRotation)
             {
-                if (_2DUtil.CheckCollision(Game1.player.boundingBox, viewCone[0]) && !Game1.player.hiding)
+                rotation = rotation + Game1.deltaTime * rotation / 10;
+                if(rotation - targetRotation < Game1.deltaTime*rotation / 10)
+                {
+                    rotation = targetRotation;
+                }
+            }
+
+            if (direction != targetDirection)
+            {
+                float xinc = Game1.deltaTime * direction.X / 10;
+                float yinc = Game1.deltaTime * direction.Y / 10;
+
+                direction = new Vector2(direction.X + xinc, direction.Y +  yinc );
+            
+                
+                if (direction.X - targetDirection.X < xinc && direction.Y - targetDirection.Y < yinc)
+                {
+                    direction = targetDirection;
+                }
+            }
+
+            
+
+
+
+
+
+
+            if (m_enemyState == EnemyState.patrolling)
+            {
+                if (_2DUtil.CheckCollision(viewCone, Game1.player.boundingBox) && !Game1.player.hiding)
                 {
                     SetEnemyState(EnemyState.chasing);
                 }
@@ -116,29 +153,42 @@ namespace Game1
                 if (m_enemyState == EnemyState.chasing)
                 {
                     rotation = _2DUtil.LookAt(this.pos2D, Game1.player.pos2D);
-                    m_direction = Game1.player.pos2D - this.pos2D;
-                    m_direction.Normalize();
+                    direction = Game1.player.pos2D - this.pos2D;
+                    direction.Normalize();
                     _2DUtil.MoveTowards(this, Game1.player.pos2D, (float)gameTime.ElapsedGameTime.TotalMilliseconds * m_moveSpeed);
                 }
             }
 
         }
 
-        private Vector2 m_direction = new Vector2();
 
         public void StartPatrol(int patrolIndex)
         {
             Vector2 source = this.pos2D;
             Vector2 dest = m_patrolPath[patrolIndex];
 
-            rotation = _2DUtil.LookAt(source, dest);
-            m_direction = dest - this.pos2D;
-            m_direction.Normalize();
-        }
+            /*
+            if(rotation!=targetRotation)
+            {
+                rotation = targetRotation;
+            }
 
-        private float m_viewDist = 4f;
-        //todo must be rotating rectangle...
-        public List<Rectangle> viewCone
+            if (direction != targetDirection)
+            {
+                direction = new Vector2(targetDirection.X,targetDirection.Y);
+            }
+            */
+
+
+            rotation = _2DUtil.LookAt(source, dest);
+            targetRotation = rotation;//_2DUtil.LookAt(source, dest);
+            direction = dest - this.pos2D;
+            targetDirection = direction;//dest - this.pos2D;
+        }
+        
+        public Vector2 viewRange { get; set; }
+
+        public OBB viewCone
         {
             get
             {
@@ -147,18 +197,26 @@ namespace Game1
                 if (animSprite != null)
                 {
 
+                    direction.Normalize();
+                    Vector2 viewOrigin = new Vector2(pos2D.X + (viewRange.X* direction.X)/2, pos2D.Y + (viewRange.Y* direction.Y)/2);
+                    OBB view = new OBB(viewOrigin,rotation,new Vector2(viewRange.X,viewRange.Y));
+                    /*
+
                     //Vector2 spriteSize = new Vector2((int)(animSprite.width / (1 / scale.X)), (int)(animSprite.height / (1 / scale.Y)));
                     //Vector2 direction = dest - source;
 
-                    Vector2 distdir = new Vector2(m_direction.X * m_viewDist, m_direction.Y * m_viewDist);
+                    //Vector2 distdir = new Vector2(m_direction.X * m_viewDist, m_direction.Y * m_viewDist);
                     //Rectangle rect1 = new Rectangle((int)pos2D.X - (int)(spriteSize.X/2), (int)pos2D.Y - (int)(spriteSize.Y / 2), ((int)pos2D.X + (int)(spriteSize.X / 2)) * (int)distdir.X, ((int)pos2D.Y + (int)(spriteSize.Y / 2)) * (int)distdir.Y);
+
+                    //Vector2 viewScale = new Vector2(spriteSize.X, spriteSize.Y);
+                    //viewScale.Normalize();
 
                     //int w = (int)(spriteSize.X * m_viewDist);
                     //int h = (int)(spriteSize.Y * m_viewDist);
-                    int w = 100;
-                    int h = 100;
+                    int w = 300;
+                    int h = 300;
                     //Rectangle rect1 = new Rectangle((int)(pos2D.X - (spriteSize.X / 2)), (int)(pos2D.Y - (spriteSize.Y / 2)), w, h);
-                    Rectangle rect1 = new Rectangle((int)(pos2D.X ), (int)(pos2D.Y), w, h);
+                    //Rectangle rect1 = new Rectangle((int)(pos2D.X -w/2 ), (int)(pos2D.Y)-h/2, (int)(w * distdir.X), (int)(h * distdir.Y));
 
                     if (m_viewCone.Count > 0)
                     {
@@ -168,8 +226,9 @@ namespace Game1
                     {
                         m_viewCone.Add(rect1);
                     }
+                    */
 
-                    return m_viewCone;
+                    return view;
                 }
                 else
                     return null;

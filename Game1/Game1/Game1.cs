@@ -38,7 +38,7 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        private Texture2D m_playerSpr;
+        public static Texture2D whiteTex { get; private set; }
 
         public static Player player {get{ return m_player; } }
 
@@ -76,7 +76,8 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            
+
+
             Console.WriteLine("Initialising...");
 
             base.Initialize();
@@ -94,23 +95,22 @@ namespace Game1
                     "player",
                     "abc",
                     "quendaspritesheet1",
-                    "quendaspritesheet2"
+                    "quendaspritesheet2",
+                    "bush",
+                    "whitepixel"
                 };
             m_textures = LoadTextures(m_texArray, texDir);
 
             // Initialise objects.
             World.player = m_player;
+            whiteTex = m_textures.Get(texDir + "whitepixel");
 
-            if (!m_textures.ContainsKey(texDir + "player"))
-            {
-                Console.WriteLine("No player tex in map");
-
-            }
 
 
 
             testSprite = m_textures.Get(texDir + "abc");
 
+           
 
 
             // Scene 1 init
@@ -133,12 +133,12 @@ namespace Game1
             m_player.AddAnimSprite("idle", playerIdle);
             m_player.SetAnim("idle");
             m_player.defaultAnim = "idle";
-            m_player.pos2D = m_grid.GetPoint(0.5f, 0.5f);
+            m_player.pos2D = m_grid.GetPoint(0.9f, 0.9f);
 
             m_scene1.AddObject(m_player);
 
             Enemy m_testEnemy = new Enemy("enemy1", "enemy", 10);
-            
+            //m_testEnemy.collisions = false;
 
             AnimatedSprite enemyIdle = new AnimatedSprite(quendaSpritesUD, 1, 4);
 
@@ -172,8 +172,10 @@ namespace Game1
             HideLoc m_bush4 = new HideLoc("bush4", "hideloc", 0);
             HideLoc m_bush5 = new HideLoc("bush5", "hideloc", 0);
 
-            m_bush1.AddAnimSprite("idle", playerRunLeft);
-            m_bush1.scale = new Vector2(0.1f, 0.1f);
+            Texture2D bush2D = m_textures.Get(texDir + "bush");
+            AnimatedSprite bush = new AnimatedSprite(bush2D);
+            m_bush1.AddAnimSprite("idle", bush);
+            m_bush1.scale = new Vector2(2f, 2f);
             m_bush1.SetAnim("idle");
 
             m_bush1.pos2D = m_grid.GetPoint(0.9f, 0.2f);
@@ -190,14 +192,15 @@ namespace Game1
             m_bush5 = new HideLoc("bush5", m_bush1);
             m_bush5.pos2D = m_grid.GetPoint(0.3f, 0.56f);
 
+            
             m_scene1.AddObject(m_bush1);
             m_scene1.AddObject(m_bush2);
             m_scene1.AddObject(m_bush3);
             m_scene1.AddObject(m_bush4);
             m_scene1.AddObject(m_bush5);
-
-            m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamage);
-
+            
+            //m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamageStop);
+            m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamageStop);
             GameObject2D m_end = new GameObject2D("end", "end");
             m_end.pos2D = m_grid.GetPoint(0.99f, 0.5f);
             //m_end.SetCustomBoundingBox(new Rectangle(new Point((int)m_end.pos2D.X, (int)m_end.pos2D.X), new Point((int)m_end.pos2D.X + 100, (int)m_end.pos2D.X + 100)));
@@ -209,7 +212,10 @@ namespace Game1
 
             //m_testEnemy.AddCollisionTrigger(m_player, EnemyHitsPlayer);
 
-
+            GameObject2D m_go1 = new GameObject2D("colTest", "colTest");
+            m_go1.pos2D = m_grid.GetPoint(0.9f, 0.6f);
+            m_go1.AddAnimSprite("default", playerRunUp);
+            //m_scene1.AddObject(m_go1);
 
 
 
@@ -242,9 +248,18 @@ namespace Game1
         void OtherTakesDamage(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
         {
 
-            //Console.WriteLine("Collision event triggered: Player hit enemy.");
+            Console.WriteLine("Collision event triggered: Player hit enemy.");
             
             other.RegisterHit(gameTime, 10);
+        }
+
+        void OtherTakesDamageStop(GameTime gameTime, Enemy thisobj, GameObject2D other)
+        {
+
+            //Console.WriteLine("Collision event triggered: Player hit enemy.");
+            Console.WriteLine("Collision event triggered: Player hit enemy.");
+            other.RegisterHit(gameTime, 10);
+            thisobj.SetEnemyState(Enemy.EnemyState.patrolling);
         }
 
         /*
@@ -319,6 +334,9 @@ namespace Game1
             // TODO: Unload any non ContentManager content here
         }
 
+
+        public static float deltaTime { get; private set; }
+        private float lastGameTime = 0;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -332,6 +350,11 @@ namespace Game1
                 Exit();
             }
             //m_player.Update(gameTime);
+
+
+
+            deltaTime = gameTime.ElapsedGameTime.Milliseconds - lastGameTime;
+            lastGameTime = gameTime.ElapsedGameTime.Milliseconds;
 
             m_scene1.Update(gameTime);
 

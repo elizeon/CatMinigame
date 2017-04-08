@@ -56,21 +56,44 @@ namespace Game1
         {
             Console.WriteLine(vec.X + "," + vec.Y);
         }
-
+        /*
         public static bool CheckCollision(GameObject2D obj1, GameObject2D obj2)
         {
-            if(obj1.collisions && obj2.collisions)
-            {
+            //if(obj1.collisions && obj2.collisions)
+            //{
                 if (obj1.boundingBox.Intersects(obj2.boundingBox))
                 {
                     return (true);
 
                 }
                 
-            }
+            //}
             return false;
 
         }
+        */
+
+        public static bool CheckCollision(OBB obj1, Rectangle obj2)
+        {
+            if(obj1==default(OBB) || obj2 ==default(Rectangle))
+            {
+                return false;
+            }
+            //if(obj1.collisions && obj2.collisions)
+            //{
+            OBB newOBB = new OBB(new Vector2(obj2.Center.X, obj2.Center.Y), 0, new Vector2(obj2.Width / 2, obj2.Height / 2));
+            if (obj1.Intersects(newOBB))
+            {
+                return (true);
+
+            }
+
+            //}
+            return false;
+
+        }
+
+        /*
 
         public static bool CheckCollision(GameObject2D obj1, Rectangle obj2)
         {
@@ -84,10 +107,16 @@ namespace Game1
             }
             return false;
         }
-
+        */
         public static bool CheckCollision(Rectangle obj1, Rectangle obj2)
         {
-            if(obj1.Intersects(obj2))
+
+            if (obj1 == default(Rectangle) || obj2 == default(Rectangle))
+            {
+                return false;
+            }
+
+            if (obj1.Intersects(obj2))
             {
                 return (true);
 

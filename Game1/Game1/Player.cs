@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Game1
 {
@@ -16,7 +16,12 @@ namespace Game1
 
         public Player(string newid, string newtype, float newhp) : base(newid, newtype,newhp)
         {
+        }
 
+        public override void Render(SpriteBatch sprBatch)
+        {
+            base.Render(sprBatch);
+            Render2D.Instance.DrawRectangle(sprBatch, new Rectangle((int)pos2D.X, (int)pos2D.Y, 10, 10), Color.White);
         }
 
 
@@ -38,6 +43,8 @@ namespace Game1
 
         public override void Update(GameTime gameTime)
         {
+
+            base.Update(gameTime);
 
             for (int i = 0; i < collisionEvents.Count; i++)
             {
@@ -110,6 +117,11 @@ namespace Game1
                             tohide = true;
                             break;
                         }
+                    case "enemy":
+                        {
+                            TriggerDeath();
+                            break;
+                        }
                         /*
                     case "enemy":
                         {
@@ -140,10 +152,12 @@ namespace Game1
             }
             
 
-            Console.WriteLine("Hiding: " + hiding);
+            //Console.WriteLine("Hiding: " + hiding);
 
 
-            base.Update(gameTime);
+
+            //Console.WriteLine("Player location at " + pos2D.X, ", " + pos2D.Y);
+
 
         }
     }

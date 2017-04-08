@@ -12,18 +12,60 @@ namespace Game1
     {
 
         //public Dictionary<string,bool> states { get; set; }
-        public AnimatedSprite animSprite { get; set; }
+        public AnimatedSprite animSprite { get; protected set; }
 
+        /// <summary>
+        /// Dictionary of animated (or static) sprites.
+        /// </summary>
         public Dictionary<string, AnimatedSprite> animSprites { get; }
+        /// <summary>
+        /// For searching the dictionary elements recursively.
+        /// </summary>
+        private List<AnimatedSprite> animSpritesList = new List<AnimatedSprite>();
 
         public void AddAnimSprite(string key, AnimatedSprite sprite)
         {
             animSprites[key] = sprite;
-            if(defaultAnim ==null)
+            animSpritesList.Add(sprite);
+
+            if (defaultAnim == null)
             {
                 defaultAnim = key;
             }
+            if (animSprite == null)
+            {
+                animSprite = sprite;
+            }
+
+            if (animSprite != null)
+            {
+
+                maxX = 0;
+                maxY = 0;
+                for (int i = 0; i < animSpritesList.Count; i++)
+                {
+                    if (animSpritesList[i].width > maxX)
+                    {
+                        maxX = animSpritesList[i].width * scale.X;
+
+                    }
+                    if (animSpritesList[i].width > maxY)
+                    {
+                        maxY = animSpritesList[i].width * scale.Y;
+
+                    }
+
+                    //m_boundingBox = 
+                }
+
+
+            }
         }
+
+        //todo rename these vars to be more explanatory
+        public float maxX { get; private set; }
+        public float maxY { get; private set; }
+
         /// <summary>
         /// Default AnimatedSprite to revert to once finished playing a temp animation.
         /// If null, will be set to the first AnimatedSprite you add.
@@ -77,13 +119,30 @@ namespace Game1
         public GameObject2D(string newid, string newtype)
         {
             animSprites = new Dictionary<string, AnimatedSprite>();
-            
+
             animSprites["default"] = new AnimatedSprite(null, 1, 1);
             animSprite = animSprites["default"];
             m_id = newid;
             m_type = newtype;
             hp = 0;
+            direction = new Vector2(0, 0);
+            targetDirection = direction;
+            rotation = 0;
+            targetRotation = rotation;
+            
+            //m_boundingBox = new Rectangle(-10000,-10000,1,1);
+
+
+
         }
+
+        public float rotation { get; protected set; }
+
+        public float targetRotation { get; protected set; }
+        public Vector2 targetDirection { get; protected set; }
+        
+        public Vector2 direction { get; protected set; }
+
 
 
         private Vector2 m_scale = new Vector2(1, 1);
@@ -92,13 +151,7 @@ namespace Game1
         /// </summary>
         public Vector2 scale { get { return m_scale; } set { m_scale = value; } }
 
-        private float m_rotation = 0;
-        public float rotation
-        {
-            get { return m_rotation; }
-            set { m_rotation = value; }
-        }
-
+        
         private Queue<GameObject2D> m_collisionEvents = new Queue<GameObject2D>();
         public Queue<GameObject2D> collisionEvents { get { return m_collisionEvents; } }
 
@@ -154,6 +207,12 @@ namespace Game1
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if(!usingCustomBBox)
+            {
+                m_boundingBox = new Rectangle((int)(pos2D.X - maxX / 2), (int)(pos2D.Y - maxY / 2), (int)(maxX), (int)(maxY));
+
+            }
+
             /*
             if(!animSprite.playing)
             {
@@ -163,7 +222,7 @@ namespace Game1
             else
             {
             */
-                animSprite.Update(gameTime);
+            animSprite.Update(gameTime);
                 for (int i = 0; i < m_collisionEvents.Count; i++)
                 {
                     ProcessCollisionEvent(gameTime, m_collisionEvents.Dequeue());
@@ -173,6 +232,8 @@ namespace Game1
 
 
         }
+
+        private bool usingCustomBBox = false;
 
         /// <summary>
         /// Set the animation to that with the string key given.
@@ -187,7 +248,7 @@ namespace Game1
 
         }
 
-        
+        /*
         /// <summary>
         /// Play animation of this string once, then revert to default.
         /// </summary>
@@ -201,14 +262,33 @@ namespace Game1
             }
 
         }
+        */
+
+        /// <summary>
+        /// Returns size of the current sprite.
+        /// </summary>
+        public Vector2 spriteSize
+        {
+            get
+            {
+                return new Vector2(animSprite.width * scale.X, animSprite.height * scale.Y);
+
+            }
+        }
 
 
         public virtual void Render(SpriteBatch sprBatch)
         {
-            if (animSprite != null)
+            if(visible)
             {
-                animSprite.Draw(sprBatch, pos2D, rotation, scale);
+                if (animSprite != null)
+                {
+                    animSprite.Draw(sprBatch, new Vector2(pos2D.X-(spriteSize.X)/2,pos2D.Y-(spriteSize.Y)/2), rotation, scale);
+                    Render2D.Instance.DrawRectangle(sprBatch, boundingBox, Color.White);
+
+                }
             }
+            
 
         }
 
@@ -218,23 +298,15 @@ namespace Game1
             get
             {
 
-                if (animSprite != null)
-                {
-
-                    Vector2 spriteSize = new Vector2((int)(animSprite.width / (1 / scale.X)), (int)(animSprite.height / (1 / scale.Y)));
-                    
-
-                    return new Rectangle((int)pos2D.X, (int)pos2D.Y, (int)spriteSize.X, (int)spriteSize.Y);
-                }
-                else
-                {
-                    return new Rectangle();
-                }
+                return m_boundingBox ;
 
 
             }
+            set
+            { m_boundingBox = value; }
 
         }
+        private Rectangle m_boundingBox;
 
 
 
@@ -269,6 +341,11 @@ namespace Game1
             }
         }
 
+        public void SetCustomBoundingBox(Rectangle rect)
+        {
+            m_boundingBox = rect;
+            usingCustomBBox = true;
+        }
 
         /// <summary>
         /// TODO actually destroy object.
@@ -279,6 +356,7 @@ namespace Game1
             visible = false;
             collisions = false;
             active = false;
+            SetCustomBoundingBox( default(Rectangle));
         }
 
 
