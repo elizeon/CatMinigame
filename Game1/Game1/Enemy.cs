@@ -74,31 +74,33 @@ namespace Game1
         {
             base.Update(gameTime);
 
+            /*
+           if(rotation != targetRotation)
+           {
+               rotation = rotation + Game1.deltaTime * rotation / 10;
+               if(rotation - targetRotation < Game1.deltaTime*rotation / 10)
+               {
+                   rotation = targetRotation;
+               }
+           }
 
-            if(rotation != targetRotation)
-            {
-                rotation = rotation + Game1.deltaTime * rotation / 10;
-                if(rotation - targetRotation < Game1.deltaTime*rotation / 10)
-                {
-                    rotation = targetRotation;
-                }
-            }
 
-            if (direction != targetDirection)
-            {
-                float xinc = Game1.deltaTime * direction.X / 10;
-                float yinc = Game1.deltaTime * direction.Y / 10;
+           if (direction != targetDirection)
+           {
+               float xinc = Game1.deltaTime * direction.X / 10;
+               float yinc = Game1.deltaTime * direction.Y / 10;
 
-                direction = new Vector2(direction.X + xinc, direction.Y +  yinc );
-            
-                
-                if (direction.X - targetDirection.X < xinc && direction.Y - targetDirection.Y < yinc)
-                {
-                    direction = targetDirection;
-                }
-            }
+               direction = new Vector2(direction.X + xinc, direc
+               tion.Y +  yinc );
 
-            
+
+               if (direction.X - targetDirection.X < xinc && direction.Y - targetDirection.Y < yinc)
+               {
+                   direction = targetDirection;
+               }
+           }
+
+           */
 
 
 
@@ -181,9 +183,10 @@ namespace Game1
 
 
             rotation = _2DUtil.LookAt(source, dest);
-            targetRotation = rotation;//_2DUtil.LookAt(source, dest);
+            //
+            //targetRotation = rotation;//_2DUtil.LookAt(source, dest);
             direction = dest - this.pos2D;
-            targetDirection = direction;//dest - this.pos2D;
+            //targetDirection = direction;//dest - this.pos2D;
         }
         
         public Vector2 viewRange { get; set; }
@@ -197,9 +200,11 @@ namespace Game1
                 if (animSprite != null)
                 {
 
-                    direction.Normalize();
-                    Vector2 viewOrigin = new Vector2(pos2D.X + (viewRange.X* direction.X)/2, pos2D.Y + (viewRange.Y* direction.Y)/2);
+                    Vector2 dir = new Vector2(direction.X,direction.Y);
+                    dir.Normalize();
+                    Vector2 viewOrigin = new Vector2(pos2D.X + (viewRange.X* dir.X)/2, pos2D.Y + (viewRange.Y* dir.Y)/2);
                     OBB view = new OBB(viewOrigin,rotation,new Vector2(viewRange.X,viewRange.Y));
+
                     /*
 
                     //Vector2 spriteSize = new Vector2((int)(animSprite.width / (1 / scale.X)), (int)(animSprite.height / (1 / scale.Y)));

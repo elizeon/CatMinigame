@@ -88,11 +88,11 @@ namespace Game1
         /// <returns>A rectangle corresponging to the unrotated position of the AABB</returns>
         private Rectangle GetDestinationRect()
         {
-            int x = (int)(_origin.X);
-            int y = (int)(_origin.Y);
+            int X = (int)(_origin.X);
+            int Y = (int)(_origin.Y);
             int width = (int)(_halfWidths.X * 2);
             int height = (int)(_halfWidths.Y * 2);
-            return new Rectangle(x, y, width, height);
+            return new Rectangle(X, Y, width, height);
         }
 
         /// <summary>

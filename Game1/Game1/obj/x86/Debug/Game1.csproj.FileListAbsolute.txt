@@ -23,10 +23,13 @@ c:\users\elizabeth\documents\visual studio 2015\Projects\Game1\Game1\obj\x86\Deb
 c:\users\elizabeth\documents\visual studio 2015\Projects\Game1\Game1\obj\x86\Debug\Game1.pdb
 C:\Users\elizabeth\Documents\Visual Studio 2015\Projects\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\abc.xnb
 C:\Users\elizabeth\Documents\Visual Studio 2015\Projects\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\player.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.exe
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.pdb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\abc.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\birds.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\bush.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\player.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet1.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet2.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\whitepixel.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Game1.exe
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Game1.pdb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\MonoGame.Framework.dll
@@ -47,9 +50,5 @@ C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debu
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\SharpDX.XInput.xml
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.csprojResolveAssemblyReference.cache
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\birds.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet1.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet2.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\bush.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\whitepixel.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.exe
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.pdb

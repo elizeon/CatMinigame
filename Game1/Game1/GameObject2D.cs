@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace Game1
 {
     public class GameObject2D : GameObject
@@ -126,9 +127,9 @@ namespace Game1
             m_type = newtype;
             hp = 0;
             direction = new Vector2(0, 0);
-            targetDirection = direction;
+            //targetDirection = new Vector2(direction.X,direction.Y);
             rotation = 0;
-            targetRotation = rotation;
+            //targetRotation = 0;
             
             //m_boundingBox = new Rectangle(-10000,-10000,1,1);
 
@@ -138,8 +139,8 @@ namespace Game1
 
         public float rotation { get; protected set; }
 
-        public float targetRotation { get; protected set; }
-        public Vector2 targetDirection { get; protected set; }
+        //public float targetRotation { get; protected set; }
+       // public Vector2 targetDirection { get; protected set; }
         
         public Vector2 direction { get; protected set; }
 
@@ -345,6 +346,7 @@ namespace Game1
         {
             m_boundingBox = rect;
             usingCustomBBox = true;
+            Console.WriteLine(this.id + " now using custom bounding box.\n");
         }
 
         /// <summary>

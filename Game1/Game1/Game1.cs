@@ -133,7 +133,7 @@ namespace Game1
             m_player.AddAnimSprite("idle", playerIdle);
             m_player.SetAnim("idle");
             m_player.defaultAnim = "idle";
-            m_player.pos2D = m_grid.GetPoint(0.9f, 0.9f);
+            m_player.pos2D = m_grid.GetPoint(0.5f, 0.5f);
 
             m_scene1.AddObject(m_player);
 
@@ -335,7 +335,7 @@ namespace Game1
         }
 
 
-        public static float deltaTime { get; private set; }
+        public float deltaTime { get; private set; }
         private float lastGameTime = 0;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
