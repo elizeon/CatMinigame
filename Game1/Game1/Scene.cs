@@ -8,14 +8,34 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Game1
 {
-    class Scene
+    public class Scene
     {
         List<GameObject2D> m_objects = new List<GameObject2D>();
         //GameObject2D[] m_objects;
         Enemy[] m_enemies; // May find unnecessary - if enemy update deals with everything
 
+        float m_initTime = 0;
+
+        public float initTime { get { return m_initTime; } }// set { m_initTime = value; } }
+
+        public Scene()
+        {
+            m_initTime = Game1.totalTime;
+
+        }
+
+        public void ClearCollisionEvents()
+        {
+            for (int i=0;i<m_objects.Count;i++)
+            {
+                m_objects[i].ClearCollisionEvents();
+            }
+        }
+
         public void Render(SpriteBatch sprBatch)
         {
+            
+
             for (int i=0;i<m_objects.Count;i++)
             {
                 if(m_objects[i].visible)
@@ -23,6 +43,11 @@ namespace Game1
                     m_objects[i].Render(sprBatch);
                 }
                 
+            }
+
+            if (m_initTime == 0)
+            {
+                m_initTime = Game1.totalTime;
             }
         }
 

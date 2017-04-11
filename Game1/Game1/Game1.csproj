@@ -55,7 +55,6 @@
     <Compile Include="HashTable.cs" />
     <Compile Include="HideLoc.cs" />
     <Compile Include="Input.cs" />
-    <Compile Include="OrientedBoundingBox.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

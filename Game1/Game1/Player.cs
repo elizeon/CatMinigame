@@ -115,16 +115,24 @@ namespace Game1
 
             if(mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {
-                //m_targetLoc =  new Vector2(mouse.Position.X,mouse.Position.Y);
-                m_playerMoving = true;
-                m_targetLoc = Game1.gameGrid.GetPoint(mouse.Position.X / Game1.screenWidth, mouse.Position.Y / Game1.screenHeight);
-                Vector2 source = this.pos2D;
-                Vector2 dest = m_targetLoc;
-                
+                if(Game1.totalTime >= Game1.scenes[Game1.currentScene].initTime + 1000)
+                {
+                    //m_targetLoc =  new Vector2(mouse.Position.X,mouse.Position.Y);
+                    m_playerMoving = true;
+                    m_targetLoc = Game1.gameGrid.GetPoint(mouse.Position.X / Game1.screenWidth, mouse.Position.Y / Game1.screenHeight);
+                    Vector2 source = this.pos2D;
+                    Vector2 dest = m_targetLoc;
 
-                rotation = _2DUtil.LookAt(source, dest);
-                //
-                direction = dest - this.pos2D;
+
+                    rotation = _2DUtil.LookAt(source, dest);
+                    //
+                    direction = dest - this.pos2D;
+                }
+                else
+                {
+
+                }
+                
 
             }
             // Player movement
