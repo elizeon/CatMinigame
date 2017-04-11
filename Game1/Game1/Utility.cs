@@ -18,6 +18,22 @@ namespace Game1
         {
             return new Point((int)vec.X, (int)vec.Y);
         }
+        public static float Max(float a, float b)
+        {
+            if (a >= b)
+                return a;
+            return b;
+        }
+
+        public static bool Within(float a, float b, float restriction)
+        {
+            if(Math.Abs(a-b)<=restriction)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
     
 

@@ -18,16 +18,18 @@ namespace Game1
         /// <summary>
         /// Dictionary of animated (or static) sprites.
         /// </summary>
-        public Dictionary<string, AnimatedSprite> animSprites { get; }
+        public Dictionary<string, AnimatedSprite> animSprites { get { return m_animSprites; } }
+
+        private Dictionary<string, AnimatedSprite> m_animSprites = new Dictionary<string, AnimatedSprite>();
         /// <summary>
         /// For searching the dictionary elements recursively.
         /// </summary>
-        private List<AnimatedSprite> animSpritesList = new List<AnimatedSprite>();
+        private List<AnimatedSprite> m_animSpritesList = new List<AnimatedSprite>();
 
         public void AddAnimSprite(string key, AnimatedSprite sprite)
         {
-            animSprites[key] = sprite;
-            animSpritesList.Add(sprite);
+            m_animSprites[key] = sprite;
+            m_animSpritesList.Add(sprite);
 
             if (defaultAnim == null)
             {
@@ -37,16 +39,16 @@ namespace Game1
             if (animSprite != null)
             {
                 
-                for (int i = 0; i < animSpritesList.Count; i++)
+                for (int i = 0; i < m_animSpritesList.Count; i++)
                 {
-                    if (animSpritesList[i].width * scale.X > maxX)
+                    if (m_animSpritesList[i].width * scale.X > maxX)
                     {
-                        maxX = animSpritesList[i].width * scale.X;
+                        maxX = m_animSpritesList[i].width * scale.X;
 
                     }
-                    if (animSpritesList[i].height * scale.Y > maxY)
+                    if (m_animSpritesList[i].height * scale.Y > maxY)
                     {
-                        maxY = animSpritesList[i].height * scale.Y;
+                        maxY = m_animSpritesList[i].height * scale.Y;
 
                     }
 
@@ -113,7 +115,7 @@ namespace Game1
         /// <param name="newtype">Type of object, eg. enemy, NPC.</param>
         public GameObject2D(string newid, string newtype)
         {
-            animSprites = new Dictionary<string, AnimatedSprite>();
+            m_animSprites = new Dictionary<string, AnimatedSprite>();
 
             animSprites["default"] = new AnimatedSprite(null, 1, 1);
             animSprite = animSprites["default"];
@@ -127,7 +129,11 @@ namespace Game1
 
             //m_boundingBox = new Rectangle(-10000,-10000,1,1);
 
-            maxX = 0;
+            //m_scale = new Vector2(1, 1);
+            m_scale = new Vector2(1, 1);
+
+
+        maxX = 0;
             maxY = 0;
 
 
@@ -192,6 +198,19 @@ namespace Game1
             {
                 collisionTriggers.Get(otherObj).DynamicInvoke(gameTime, this, otherObj);
             }
+        }
+
+        /// <summary>
+        /// Enter the size you want the sprite to be and the scale will be set accordingly.
+        /// The object must have an animatedSprite active, ie with SetAnim().
+        /// </summary>
+        /// <param name="newSprSize"></param>
+        public void ScaleToSpriteSize(Vector2 newSprSize)
+        {
+            Vector2 new1 = new Vector2(newSprSize.X / spriteSize.X, newSprSize.Y / spriteSize.Y);
+            m_scale.X = new1.X;
+            m_scale.Y = new1.Y;
+
         }
 
         /// <summary>
@@ -275,6 +294,7 @@ namespace Game1
         {
             get
             {
+                
                 return new Vector2(animSprite.width * scale.X, animSprite.height * scale.Y);
 
             }
@@ -287,7 +307,7 @@ namespace Game1
             {
                 if (animSprite != null)
                 {
-                    animSprite.Draw(sprBatch, new Vector2(pos2D.X-(spriteSize.X)/2,pos2D.Y-(spriteSize.Y)/2), rotation, scale);
+                    animSprite.Draw(sprBatch, new Vector2(pos2D.X-(spriteSize.X)/2,pos2D.Y-(spriteSize.Y)/2), rotation, new Vector2(scale.X,scale.Y));
                     //Render2D.Instance.DrawRectangle(sprBatch, boundingBox, Color.White);
 
                 }

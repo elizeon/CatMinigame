@@ -72,6 +72,16 @@ namespace Game1
 
         }
         */
+        
+        public static bool CheckSphereCollision(Vector2 pos1, float radius1, Vector2 pos2,float radius2)
+        {
+            if(_2DUtil.Distance(pos1,pos2)<=radius1+radius2)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         public static bool CheckCollision(OBB obj1, Rectangle obj2)
         {
@@ -117,6 +127,22 @@ namespace Game1
             }
 
             if (obj1.Intersects(obj2))
+            {
+                return (true);
+
+            }
+            return (false);
+        }
+
+        public static bool CheckCollision(Rectangle obj1, Vector2 obj2)
+        {
+
+            if (obj1 == default(Rectangle))
+            {
+                return false;
+            }
+
+            if (obj2.X<=obj1.Right&&obj2.X>=obj1.Left&&obj2.Y>=obj1.Top&&obj2.Y<=obj1.Bottom)
             {
                 return (true);
 

@@ -4,8 +4,6 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/abc.bmp</File>
-    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/birds.png</File>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/player.bmp</File>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/quendaspritesheet1.png</File>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/quendaspritesheet2.png</File>
@@ -20,5 +18,12 @@
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/completearea.bmp</File>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/exit.png</File>
     <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/grass.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btnmeddown.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btnmedup.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btneasydown.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btneasyup.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btnharddown.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btnhardup.png</File>
+    <File>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/btncontinue.png</File>
   </SourceFiles>
 </SourceFileCollection>

@@ -23,8 +23,6 @@ c:\users\elizabeth\documents\visual studio 2015\Projects\Game1\Game1\obj\x86\Deb
 c:\users\elizabeth\documents\visual studio 2015\Projects\Game1\Game1\obj\x86\Debug\Game1.pdb
 C:\Users\elizabeth\Documents\Visual Studio 2015\Projects\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\abc.xnb
 C:\Users\elizabeth\Documents\Visual Studio 2015\Projects\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\player.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\abc.xnb
-C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\birds.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\bush.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\player.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet1.xnb
@@ -60,5 +58,12 @@ C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debu
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\cat_fluffy.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\completearea.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\startscreen.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btneasydown.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btneasyup.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btnharddown.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btnhardup.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btnmeddown.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btnmedup.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\exit.xnb
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\grass.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\btncontinue.xnb

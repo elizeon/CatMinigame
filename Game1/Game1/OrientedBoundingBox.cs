@@ -1,6 +1,12 @@
 ﻿/*
  * Source https://gist.github.com/rkachowski/324608
  * 
+ * 
+ * http://www.metanetsoftware.com/technique/tutorialA.html
+ * If we can find an axis along which the projection of the two shapes does not overlap, then the shapes don't overlap. 
+ * In 2D, each of these potential separating axes is perpendicular to one of the faces (edges) of each shape. 
+
+ *  
  */
 
 using System;
@@ -9,215 +15,181 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Extensions;
 
 namespace Game1
 {
     public class OBB
     {
-        #region members and properties
-        Vector2 _origin;//centre point of the OBB
-        public Vector2 Origin
+
+        Vector2 m_origin;
+        public Vector2 origin
         {
-            get { return _origin; }
-            set { _origin = value; }
+            get { return m_origin; }
+            set { m_origin = value; }
         }
-        Vector2[] _axis;//2d orientation matrix
-        public Vector2[] Axis
+        Vector2[] m_axis;
+        /// <summary>
+        /// Axis the box is on.
+        /// </summary>
+        public Vector2[] axis
         {
-            get { return _axis; }
+            get { return m_axis; }
         }
-        Vector2 _halfWidths;//the +ve extents along each axis
-        public Vector2 HalfWidths
+        Vector2 m_halfWidths;
+        public Vector2 halfWidths
         {
-            get { return _halfWidths; }
-            set { _halfWidths = value; }
+            get { return m_halfWidths; }
+            set { m_halfWidths = value; }
         }
-        float _angleInRadians;//used for drawing a visuaisation of the OBB
-        public float AngleInRadians
+        float m_angle;
+        public float angleInRadians
         {
-            get { return _angleInRadians; }
+            get { return m_angle; }
             set
             {
-                if (value < Math.PI && value > -Math.PI) //in the range [-PI..PI]
-                    UpdateAxis(value);
+                float newAxis = 0;
+                // PI is 180 degrees
+
+                // less than 180 but more than -180 degrees?
+                if (value < Math.PI && value > -Math.PI)
+
+                {
+                    newAxis = value;
+                }
+                // More than or equal to 180 degrees?
                 if (value >= Math.PI)
-                    UpdateAxis((float)(Math.Abs((value % Math.PI * 2)) - Math.PI));
+                {
+                    // Get remainder of dividing angle by 180 degrees
+                    // Multiply by 2
+                    // Get absolute value
+                    // Subtract 180 degrees
+                    newAxis = (float)(Math.Abs((value % Math.PI * 2)) - Math.PI);
+                }
+                // Less than or equal to -180 degrees?
                 if (value <= -Math.PI)
-                    UpdateAxis((float)(Math.Abs((value % Math.PI * 2)) + Math.PI));
+                {
+                    // Get remainder of dividing angle by 180 degrees
+                    // Multiply by 2
+                    // Get absolute value
+                    // Add 180 degrees
+                    newAxis = (float)(Math.Abs((value % Math.PI * 2)) + Math.PI);
+
+                }
+
+                m_angle = newAxis;
+
+
+                m_axis[0].X = (float)Math.Cos(m_angle);
+                m_axis[0].Y = (float)Math.Sin(m_angle);
+                m_axis[1].Y = (float)Math.Cos(m_angle);
+                m_axis[1].X = -(float)Math.Sin(m_angle);
+
             }
         }
 
-        public Color DebugColor = Color.White;
-        //an epsilon value to counter floating point errors in a parallel situation
-        const float EPSILON = 0.00001f;
-        #endregion
-
-        /// <summary>
-        /// Creates an oriented bounding box for collision detection
-        /// </summary>
-        /// <param name="Origin">The center of the box</param>
-        /// <param name="AngleInRadians">The rotation of the box in the xy plane</param>
-        /// <param name="HalfWidths">The half extents of the box in it's X and Y axis</param>
-        public OBB(Vector2 Origin, float AngleInRadians, Vector2 HalfWidths)
+        public OBB(Vector2 iOrigin, float iAngleInRadians, Vector2 iHalfWidths)
         {
-            _origin = Origin;
-            _angleInRadians = AngleInRadians;
-            _halfWidths = HalfWidths;
+            m_origin = iOrigin;
+            m_angle = iAngleInRadians;
+            m_halfWidths = iHalfWidths;
 
-            _axis = new Vector2[2];
-            _axis[0] = new Vector2();
-            _axis[1] = new Vector2();
+            m_axis = new Vector2[2];
+            m_axis[0] = new Vector2();
+            m_axis[1] = new Vector2();
 
-            UpdateAxis(AngleInRadians);
+
+
         }
 
-        /// <summary>
-        /// Returns whether this OBB is intersecting a second
-        /// </summary>
-        /// <param name="OtherOBB"></param>
-        /// <returns></returns>
         public bool Intersects(OBB OtherOBB)
         {
             return OBB.Intersects(this, OtherOBB);
         }
 
         /// <summary>
-        /// Finds where we would draw our debug texture without rotation.
+        /// 
         /// </summary>
-        /// <returns>A rectangle corresponging to the unrotated position of the AABB</returns>
+        /// <returns></returns>
         private Rectangle GetDestinationRect()
         {
-            int X = (int)(_origin.X);
-            int Y = (int)(_origin.Y);
-            int width = (int)(_halfWidths.X * 2);
-            int height = (int)(_halfWidths.Y * 2);
+            int X = (int)(m_origin.X);
+            int Y = (int)(m_origin.Y);
+            int width = (int)(m_halfWidths.X * 2);
+            int height = (int)(m_halfWidths.Y * 2);
             return new Rectangle(X, Y, width, height);
         }
 
-        /// <summary>
-        /// Updates the orientation of the OBB
-        /// </summary>
-        /// <param name="AngleInRadians">The new rotation in radians</param>
-        public void UpdateAxis(float AngleInRadians)
-        {
-            //Standard rotation matrix equation
-            _axis[0].X = (float)Math.Cos(AngleInRadians);
-            _axis[0].Y = (float)Math.Sin(AngleInRadians);
-            _axis[1].Y = (float)Math.Cos(AngleInRadians);
-            _axis[1].X = -(float)Math.Sin(AngleInRadians);
 
-            _angleInRadians = AngleInRadians;
-        }
-
-        /// <summary>
-        /// Prints the properties of the OBB to the console
-        /// </summary>
-        public void Print()
-        {
-            Console.WriteLine("origin : " + _origin + "\nAngle : " + _angleInRadians +
-            "\nX Axis : " + _axis[0] + "\nY Axis : " + _axis[1]);
-        }
-
-        /// <summary>
-        /// Draws a visualisation of the OBB, useful for debug purposes
-        /// 
-        /// liz - assumption, sb must have called Begin()
-        /// </summary>
-        /// <param name="sb">The spritebatch instance to draw with</param>
-        /// <param name="NullTexture">A reference to a 1x1 texture which will be draw over the OBB</param>
         public void Draw(Texture2D NullTexture, SpriteBatch sb)
         {
-            //OBB's are only ever going to be drawn in debug mode
-            //so performance from repeated Begin() End() calls is acceptable
-            
-            //liz - removed sb.begin()
+            Vector2 norm = halfWidths;
+            norm.Normalize();
+            sb.Draw(NullTexture, GetDestinationRect(), null, Color.White, m_angle, Vector2.One / 2, SpriteEffects.None, 1f);
 
-            Vector2 g = _halfWidths;
-            g.Normalize();
-            sb.Draw(NullTexture, GetDestinationRect(), null, DebugColor,
-                _angleInRadians,
-                Vector2.One / 2,//the origin of the 1x1 texture i.e. (0.5f,0.5f)
-                SpriteEffects.None, 1f);
-            
 
         }
 
-        /// <summary>
-        /// Tests whether two OBBs intersect. Uses a separating axis implementation.
-        /// </summary>
-        /// <param name="First">The first OBB</param>
-        /// <param name="Second">The second OBB</param>
-        /// <returns></returns>
-        public static bool Intersects(OBB First, OBB Second)
+        public static bool Intersects(OBB a, OBB b)
         {
-            #region pre test calcs and declarations
-            float rf, rs;
+
+            float 
+                rf,
+
+                rs;
             float[,] R = new float[2, 2];
             float[,] AbsR = new float[2, 2];
 
-            //compuet rotation matrix by expressing second in terms of first
-            //also create common sub expressions
+
             for (int i = 0; i < 2; i++)
+            {
                 for (int j = 0; j < 2; j++)
                 {
-                    R[i, j] = Vector2.Dot(First.Axis[i], Second.Axis[j]);
-                    AbsR[i, j] = Math.Abs(R[i, j]) + EPSILON;
+                    R[i, j] = Vector2.Dot(a.axis[i], b.axis[j]);
+                    AbsR[i, j] = Math.Abs(R[i, j]) + 0.00001f;
                 }
 
-            //create translation vector
-            Vector2 translation = Second.Origin - First.Origin;
+            }
+
+            Vector2 translation = b.origin - a.origin;
 
             //bring translation into First's local coordinate system
-            translation = new Vector2(Vector2.Dot(translation, First.Axis[0]),
-                Vector2.Dot(translation, First.Axis[1]));
-            #endregion
+            translation = new Vector2(Vector2.Dot(translation, a.axis[0]), Vector2.Dot(translation, a.axis[1]));
 
             //Test if axes FirstX or FirstY separate the OBBs
-            for (int i = 0; i < 2; i++)
-            {
-                rf = First.HalfWidths.Index(i);
-                rs = Second.HalfWidths.X * AbsR[i, 0] + Second.HalfWidths.Y * AbsR[i, 1];
 
-                if (Math.Abs(translation.Index(i)) > (rf + rs))
-                    return false;
+            rf = a.halfWidths.X;
+            rs = b.halfWidths.X * AbsR[0, 0] + b.halfWidths.Y * AbsR[0, 1];
+
+            if (Math.Abs(translation.X) > (rf + rs))
+            {
+                return false;
+
             }
+
+
+            rf = a.halfWidths.X;
+            rs = b.halfWidths.Y * AbsR[0, 0] + b.halfWidths.Y * AbsR[1, 1];
+
+            if (Math.Abs(translation.Y) > (rf + rs))
+                return false;
 
             //Test if axes SecondX or SecondY separate the OBBs
-            for (int i = 0; i < 2; i++)
-            {
-                rf = First.HalfWidths.Index(0) * AbsR[0, i] + First.HalfWidths.Index(1) * AbsR[1, i];
-                rs = Second.HalfWidths.Index(i);
 
-                if (Math.Abs(translation.Index(0) * R[0, i] + translation.Index(1) * R[1, i]) > (rf + rs))
-                    return false;
-            }
+            rf = a.halfWidths.X * AbsR[0, 0] + a.m_halfWidths.Y * AbsR[1, 0];
+            rs = b.halfWidths.X;
+
+            if (Math.Abs(translation.X * R[0, 0] + translation.Y * R[1, 0]) > (rf + rs))
+                return false;
+
+
+            rf = a.halfWidths.X * AbsR[0, 1] + a.m_halfWidths.Y * AbsR[1, 1];
+            rs = b.halfWidths.Y;
+
+            if (Math.Abs(translation.Y * R[0, 1] + translation.Y * R[1, 1]) > (rf + rs))
+                return false;
 
             //no separating axis - OBBs must therefore be intersecting
             return true;
-        }
-    }
-
-}
-
-namespace Extensions
-{
-    /// <summary>
-    /// Adds the ability to index a Vector2 for cheeky code saving
-    /// </summary>
-    public static class Vector2Extensions
-    {
-        public static float Index(this Vector2 v, int i)
-        {
-            switch (i)
-            {
-                case 0:
-                    return v.X;
-                case 1:
-                    return v.Y;
-                default:
-                    throw new IndexOutOfRangeException();
-            }
         }
     }
 }

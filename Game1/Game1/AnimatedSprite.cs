@@ -22,11 +22,27 @@ namespace Game1
         public float playSpeed { get; set; }
         float totalTime = 0;
 
-        public AnimatedSprite(AnimatedSprite animToCopy) : this(animToCopy.texture, animToCopy.rows, animToCopy.columns, animToCopy.startIndex, animToCopy.endIndex)
+
+
+        /// <summary>
+        /// Basic constructorfor a static sprite.
+        /// </summary>
+        /// <param name="image">Image for the sprite.</param>
+        public AnimatedSprite(Texture2D image)
         {
-            this.flipHorizontal = animToCopy.flipHorizontal;
-            this.flipVertical = animToCopy.flipVertical;
-            this.playSpeed = animToCopy.playSpeed;
+            playing = true;
+            flipHorizontal = false;
+            flipVertical = false;
+
+            playSpeed = 1;
+            texture = image;
+            rows = 1;
+            columns = 1;
+            startIndex = 0;
+            currentFrame = startIndex;//(int)startLoc.X+(int)startLoc.Y*ncolumns;
+
+            totalFrames = rows * columns;
+            endIndex = totalFrames;
         }
 
 
@@ -135,25 +151,11 @@ namespace Game1
 
         }
 
-        /// <summary>
-        /// Basic constructorfor a static sprite.
-        /// </summary>
-        /// <param name="image">Image for the sprite.</param>
-        public AnimatedSprite(Texture2D image)
+        public AnimatedSprite(AnimatedSprite animToCopy) : this(animToCopy.texture, animToCopy.rows, animToCopy.columns, animToCopy.startIndex, animToCopy.endIndex)
         {
-            playing = true;
-            flipHorizontal = false;
-            flipVertical = false;
-
-            playSpeed = 1;
-            texture = image;
-            rows = 1;
-            columns = 1;
-            startIndex = 0;
-            currentFrame = startIndex;//(int)startLoc.X+(int)startLoc.Y*ncolumns;
-
-            totalFrames = rows * columns;
-            endIndex = totalFrames;
+            this.flipHorizontal = animToCopy.flipHorizontal;
+            this.flipVertical = animToCopy.flipVertical;
+            this.playSpeed = animToCopy.playSpeed;
         }
 
         public bool playing { get; set; }

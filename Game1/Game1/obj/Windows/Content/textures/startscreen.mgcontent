@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/startscreen.bmp</SourceFile>
-  <SourceTime>2017-04-10T21:46:24.3459739+08:00</SourceTime>
+  <SourceTime>2017-04-11T22:41:51.6313529+08:00</SourceTime>
   <DestFile>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/bin/Windows/Content/textures/startscreen.xnb</DestFile>
-  <DestTime>2017-04-11T01:45:08.9457857+08:00</DestTime>
+  <DestTime>2017-04-11T23:00:12.3384494+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T23:05:36+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

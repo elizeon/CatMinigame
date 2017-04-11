@@ -15,9 +15,11 @@ namespace Game1
         {
             if (visible)
             {
-                viewCone.Draw(Game1.whiteTex, sprBatch);
+                //viewCone.Draw(Game1.whiteTex, sprBatch);
 
                 base.Render(sprBatch);
+
+                Render2D.Instance.DebugSphere(sprBatch, pos2D, (int)viewDist);
                 //Render2D.Instance.DrawRectangle(sprBatch, viewCone[0], Color.White);
                 //Render2D.Instance.DrawRectangle(sprBatch, new Rectangle((int)pos2D.X, (int)pos2D.Y, 10, 10), Color.White);
             }
@@ -28,6 +30,10 @@ namespace Game1
 
         private int m_patrolIndex = 0;
         private float m_moveSpeed = 0;
+        public void SetMoveSpeed(float sp)
+        {
+            m_moveSpeed = sp;
+        }
 
         public enum EnemyState { patrolling, chasing }
         private EnemyState m_enemyState = EnemyState.chasing;
@@ -51,7 +57,10 @@ namespace Game1
 
         public Enemy(string newid, string newtype, float newhp) : base(newid, newtype, newhp)
         {
-            viewRange = new Vector2(200, 100);
+            viewDist = 100;
+            viewAngle = 20;
+            hiddenViewDist = 0;
+            closeViewDist = 0;
         }
 
         public void AddCollisionTrigger(GameObject2D objType, Action<GameTime, Enemy, GameObject2D> method)
@@ -108,10 +117,39 @@ namespace Game1
 
             if (m_enemyState == EnemyState.patrolling)
             {
-                if (_2DUtil.CheckCollision(viewCone, Game1.player.boundingBox) && !Game1.player.hiding)
+                Player player = Game1.player;
+                bool chase = false;
+
+                if (_2DUtil.CheckSphereCollision(pos2D, viewDist, player.pos2D, player.boundingBox.Width))
+                {
+                    float rotToPlayer = _2DUtil.LookAt(pos2D, player.pos2D);
+                    
+                    if (!player.hiding &&// If the player is not hiding
+                        // Is the player within the enemy's view angle?
+                        (Utility.Within(rotToPlayer, rotation, MathHelper.ToRadians(viewAngle)) ||
+                         // Is the player in the close view distance sphere?
+                         _2DUtil.CheckSphereCollision(pos2D, closeViewDist, player.pos2D, player.boundingBox.Width)))
+                    {
+                        chase = true;
+                    }
+                    else
+                    {
+                        // If the player is within the cat's hidden sight
+                        if (_2DUtil.CheckSphereCollision(pos2D, closeViewDist, player.pos2D, player.boundingBox.Width))
+                        {
+                            chase = true;
+                        }
+                    }
+
+
+                }
+
+                if(chase)
                 {
                     SetEnemyState(EnemyState.chasing);
+
                 }
+
             }
             
             for (int i = 0; i < collisionEvents.Count; i++)
@@ -163,11 +201,22 @@ namespace Game1
 
         }
 
+        /// <summary>
+        /// The view distance in which the enemy will see the player even if they are not in their view angle.
+        /// Will have no effect if greater than viewDist.
+        /// </summary>
+        public float closeViewDist { get; set; }
 
-        public void StartPatrol(int patrolIndex)
+        /// <summary>
+        /// The view distance in which the enemy will see the player even if they are hidden.
+        /// Will have no effect if greater than viewDist.
+        /// </summary>
+        public float hiddenViewDist { get; set; }
+
+        public void StartPatrol(int newPatrolIndex)
         {
             Vector2 source = this.pos2D;
-            Vector2 dest = m_patrolPath[patrolIndex];
+            Vector2 dest = m_patrolPath[newPatrolIndex];
 
             /*
             if(rotation!=targetRotation)
@@ -187,63 +236,14 @@ namespace Game1
             //targetRotation = rotation;//_2DUtil.LookAt(source, dest);
             direction = dest - this.pos2D;
             //targetDirection = direction;//dest - this.pos2D;
+
+            m_patrolIndex = newPatrolIndex;
+
         }
         
-        public Vector2 viewRange { get; set; }
+        public float viewDist { get; set; }
 
-        public OBB viewCone
-        {
-            get
-            {
-
-
-                if (animSprite != null)
-                {
-
-                    Vector2 dir = new Vector2(direction.X,direction.Y);
-                    dir.Normalize();
-                    Vector2 viewOrigin = new Vector2(pos2D.X + (viewRange.X* dir.X)/2, pos2D.Y + (viewRange.Y* dir.Y));
-                    OBB view = new OBB(viewOrigin,rotation,new Vector2(viewRange.X,viewRange.Y));
-
-                    /*
-
-                    //Vector2 spriteSize = new Vector2((int)(animSprite.width / (1 / scale.X)), (int)(animSprite.height / (1 / scale.Y)));
-                    //Vector2 direction = dest - source;
-
-                    //Vector2 distdir = new Vector2(m_direction.X * m_viewDist, m_direction.Y * m_viewDist);
-                    //Rectangle rect1 = new Rectangle((int)pos2D.X - (int)(spriteSize.X/2), (int)pos2D.Y - (int)(spriteSize.Y / 2), ((int)pos2D.X + (int)(spriteSize.X / 2)) * (int)distdir.X, ((int)pos2D.Y + (int)(spriteSize.Y / 2)) * (int)distdir.Y);
-
-                    //Vector2 viewScale = new Vector2(spriteSize.X, spriteSize.Y);
-                    //viewScale.Normalize();
-
-                    //int w = (int)(spriteSize.X * m_viewDist);
-                    //int h = (int)(spriteSize.Y * m_viewDist);
-                    int w = 300;
-                    int h = 300;
-                    //Rectangle rect1 = new Rectangle((int)(pos2D.X - (spriteSize.X / 2)), (int)(pos2D.Y - (spriteSize.Y / 2)), w, h);
-                    //Rectangle rect1 = new Rectangle((int)(pos2D.X -w/2 ), (int)(pos2D.Y)-h/2, (int)(w * distdir.X), (int)(h * distdir.Y));
-
-                    if (m_viewCone.Count > 0)
-                    {
-                        m_viewCone[0] = rect1;
-                    }
-                    else
-                    {
-                        m_viewCone.Add(rect1);
-                    }
-                    */
-
-                    return view;
-                }
-                else
-                    return null;
-                
-
-                    
-                
-
-            }
-        }
-
+        public float viewAngle { get; set; }
+        
     }
 }
