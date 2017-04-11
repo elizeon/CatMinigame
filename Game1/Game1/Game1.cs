@@ -197,6 +197,8 @@ namespace Game1
 
         }
 
+        public static MouseState oldMouseState { get; private set; }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -209,7 +211,20 @@ namespace Game1
             keyState = Input.keyState;
             mouseState = Mouse.GetState();
 
+            if(oldMouseState== null)
+            {
+                oldMouseState = mouseState;
+            }
 
+            bool newClick = false;
+            if(oldMouseState.LeftButton == ButtonState.Pressed)
+            {
+                newClick = false;
+            }
+            else
+            {
+                newClick = true;
+            }
 
             if (currentScene < m_scenes.Count)
             {
@@ -241,7 +256,7 @@ namespace Game1
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
 
-                        if (_2DUtil.CheckCollision(m_btnEasy.boundingBox, Utility.PointToVec2(mouseState.Position)))
+                        if (newClick && _2DUtil.CheckCollision(m_btnEasy.boundingBox, Utility.PointToVec2(mouseState.Position)))
                         {
 
                             difficulty = 0;
@@ -250,7 +265,7 @@ namespace Game1
                             m_btnHard.SetAnim("Up");
                         }
 
-                        if (_2DUtil.CheckCollision(m_btnMedium.boundingBox, Utility.PointToVec2(mouseState.Position)))
+                        if (newClick && _2DUtil.CheckCollision(m_btnMedium.boundingBox, Utility.PointToVec2(mouseState.Position)))
                         {
                             difficulty = 1;
                             m_btnMedium.SetAnim("Down");
@@ -258,7 +273,7 @@ namespace Game1
                             m_btnEasy.SetAnim("Up");
 
                         }
-                        if (_2DUtil.CheckCollision(m_btnHard.boundingBox, Utility.PointToVec2(mouseState.Position)))
+                        if (newClick && _2DUtil.CheckCollision(m_btnHard.boundingBox, Utility.PointToVec2(mouseState.Position)))
                         {
                             difficulty = 2;
                             m_btnHard.SetAnim("Down");
@@ -267,13 +282,13 @@ namespace Game1
 
                         }
 
-                        if (_2DUtil.CheckCollision(m_btnStart.boundingBox, Utility.PointToVec2(mouseState.Position)))
+                        if (newClick && _2DUtil.CheckCollision(m_btnStart.boundingBox, Utility.PointToVec2(mouseState.Position)))
                         {
                             EnterScene(0);
 
                         }
 
-                        if (_2DUtil.CheckCollision(m_btnQuit.boundingBox, Utility.PointToVec2(mouseState.Position)))
+                        if (newClick && _2DUtil.CheckCollision(m_btnQuit.boundingBox, Utility.PointToVec2(mouseState.Position)))
                         {
                             if (Game1.totalTime >= m_startScene.initTime + 1000)
                             {
@@ -350,6 +365,8 @@ namespace Game1
 
             base.Update(gameTime);
 
+
+            oldMouseState = mouseState;
         }
 
         /// <summary>
@@ -368,7 +385,9 @@ namespace Game1
 
             m_scenes[currentScene].Render(spriteBatch);
 
-            Render2D.Instance.DrawSpriteAtLocation(spriteBatch, m_cursorTex, new Vector2(mouseState.Position.X + m_cursorTex.Width / 2, mouseState.Position.Y + m_cursorTex.Height / 2), 0, new Vector2(0.6f, 0.6f));
+            Vector2 mouseScale = new Vector2(0.6f, 0.6f);
+
+            Render2D.Instance.DrawSpriteAtLocation(spriteBatch, m_cursorTex, new Vector2(mouseState.Position.X, mouseState.Position.Y), 0,mouseScale );
 
 
             spriteBatch.End();
@@ -380,10 +399,12 @@ namespace Game1
         void PassLevel(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
         {
 
-            Console.WriteLine("You have completed the level!");
             m_levelsPassed += 1;
+            Console.WriteLine("You have completed level " + m_levelsPassed + " of "+m_totalLevels+"!");
+
             if (m_levelsPassed >= m_totalLevels)
             {
+                m_scenes[currentScene].ClearCollisionEvents();
                 Win(gameTime, thisobj, other);
             }
             else
@@ -403,6 +424,7 @@ namespace Game1
 
         void OtherTakesDamageStop(GameTime gameTime, Enemy thisobj, GameObject2D other)
         {
+            m_scenes[currentScene].ClearCollisionEvents();
 
             //Console.WriteLine("Collision event triggered: Player hit enemy.");
             Console.WriteLine("Collision event triggered: Player hit enemy.");
@@ -548,21 +570,25 @@ namespace Game1
 
             m_scenes[currentScene].ClearCollisionEvents();
 
+            Console.WriteLine("Scene " + scn + " loaded.");
 
             switch (scn)
             {
                 case 0:
                     m_currentLevel = 0;
+                    m_levelsPassed = 0;
                     Level1Init();
                     
 
                     break;
                 case 1:
                     m_currentLevel = 1;
+                    m_levelsPassed = 1;
                     Level2Init();
                     break;
                 case 2:
                     m_currentLevel = 2;
+                    m_levelsPassed = 2;
                     Level3Init();
                     break;
                 case 3:
@@ -869,7 +895,7 @@ namespace Game1
 
             m_testEnemy.SetPos2D(m_grid.GetPoint(0.3f, 0.3f));
             List<Vector2> patrolPath = new List<Vector2>();
-            patrolPath.Add(m_grid.GetPoint(0.3f, 0.9f));
+            patrolPath.Add(m_grid.GetPoint(0.9f, 0.9f));
             patrolPath.Add(m_grid.GetPoint(0.1f, 0.5f));
             patrolPath.Add(m_grid.GetPoint(0.2f, 0.3f));
             patrolPath.Add(m_grid.GetPoint(0.5f, 0.7f));

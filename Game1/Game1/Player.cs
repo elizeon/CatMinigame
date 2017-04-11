@@ -115,7 +115,16 @@ namespace Game1
 
             if(mouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {
-                if(Game1.totalTime >= Game1.scenes[Game1.currentScene].initTime + 1000)
+                bool newClick = false;
+                if (Game1.oldMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                {
+                    newClick = false;
+                }
+                else
+                {
+                    newClick = true;
+                }
+                if(newClick)
                 {
                     //m_targetLoc =  new Vector2(mouse.Position.X,mouse.Position.Y);
                     m_playerMoving = true;
