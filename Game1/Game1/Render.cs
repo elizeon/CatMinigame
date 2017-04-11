@@ -59,9 +59,10 @@ namespace Game1
             //spriteBatch.Draw(sprite, dest, source, Color.White, 0, location, effect, 0f);
 
             //origin = new Vector2(origin.X+source.X/2,origin.Y+source.Y/2);
-            Vector2 origin = new Vector2(0,0);
-
-            spriteBatch.Draw(sprite, dest, source, Color.White, 0, origin, effect, 0);
+            Vector2 origin = new Vector2(dest.Width/2,dest.Height/2);
+            dest.X += dest.Width / 2;
+            dest.Y += dest.Height / 2;
+            spriteBatch.Draw(sprite, dest, source, Color.White, rotation, origin, effect, 0);
 
         }
 

@@ -17,11 +17,11 @@ namespace Game1
             {
                 return new Vector2(pos.X, pos.Y);
             }
-            set
-            {
-                pos.X = value.X;
-                pos.Y = value.Y;
-            }
+        }
+        public virtual void SetPos2D(Vector2 vec)
+        {
+            pos.X = vec.X;
+            pos.Y = vec.Y;
         }
         public Vector3 pos3D
         {

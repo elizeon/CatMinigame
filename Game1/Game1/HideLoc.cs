@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Game1
 {
@@ -24,6 +25,12 @@ namespace Game1
             this.id = newid;
             this.scale = otherloc.scale;
             this.animSprite = new AnimatedSprite(otherloc.animSprite);
+        }
+
+        public override void Render(SpriteBatch sprbat)
+        {
+            base.Render(sprbat);
+
         }
     }
 }

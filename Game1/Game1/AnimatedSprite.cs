@@ -17,6 +17,18 @@ namespace Game1
         public int endIndex { get; set; }
         private bool flipHorizontal;
         private bool flipVertical;
+        int currentFrame;
+        int totalFrames;
+        public float playSpeed { get; set; }
+        float totalTime = 0;
+
+        public AnimatedSprite(AnimatedSprite animToCopy) : this(animToCopy.texture, animToCopy.rows, animToCopy.columns, animToCopy.startIndex, animToCopy.endIndex)
+        {
+            this.flipHorizontal = animToCopy.flipHorizontal;
+            this.flipVertical = animToCopy.flipVertical;
+            this.playSpeed = animToCopy.playSpeed;
+        }
+
 
         public float width
         {
@@ -53,32 +65,8 @@ namespace Game1
 
             }
         }
-
-
-
-        int currentFrame;
-        int totalFrames;
-        public float playSpeed { get; set;}
-        float totalTime = 0;
-        bool playingTempAnim = false;
         
-        public void PlayOnce()
-        {
-            playingTempAnim = true;
-            playing = true;
-        }
-
-        public void Play()
-        {
-            playing = true;
-        }
-
-        public AnimatedSprite(AnimatedSprite animToCopy) : this(animToCopy.texture,animToCopy.rows,animToCopy.columns,animToCopy.startIndex,animToCopy.endIndex)
-        {
-            this.flipHorizontal = animToCopy.flipHorizontal;
-            this.flipVertical = animToCopy.flipVertical;
-        }
-
+       
         /// <summary>
         /// If true, all sprites in the animation will render flipped horizontally
         /// </summary>
@@ -115,6 +103,7 @@ namespace Game1
             {
                 endIndex = nEndIndex;
             }
+            currentFrame = startIndex;
             
             
             
@@ -204,10 +193,8 @@ namespace Game1
                 int row = (int)((float)currentFrame / (float)columns);
                 int column = currentFrame % columns;
 
-                // partial rectangle
                 Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
 
-                // rectangle to draw on
                 Rectangle destinationRectangle = new Rectangle((int)(location.X), (int)(location.Y), (int)(width*scale.X), (int)(height*scale.Y));
 
                 SpriteEffects myEffect = SpriteEffects.None;
@@ -228,6 +215,16 @@ namespace Game1
                     }
                 }
 
+                if(rotation !=0)
+                {
+                    rotation += +MathHelper.ToRadians(90);
+
+
+                }
+                // so that sprite up faces forward, but sprites without rotation arent affected.
+
+
+
 
                 //origin = new Vector2(destinationRectangle.Center.X,destinationRectangle.Center.y);
                 /*
@@ -246,6 +243,8 @@ namespace Game1
                     origin = new Vector2(0, 0);
                 }
                 */
+
+
 
 
                 Render2D.Instance.DrawSpriteAtRect(spriteBatch, texture, destinationRectangle, sourceRectangle, rotation, scale, myEffect,location);

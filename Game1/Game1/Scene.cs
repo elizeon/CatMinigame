@@ -30,12 +30,8 @@ namespace Game1
         {
             for (int i = 0; i < m_objects.Count; i++)
             {
-                // Update objects
-                if (m_objects[i].active)
-                {
-                    m_objects[i].Update(gameTime);
-                }
-                // Resolve Collisions
+                
+                // Identify Collisions
                 if (m_objects[i].collisions)
                 {
                     for (int a = 0; a < m_objects.Count; a++)
@@ -60,29 +56,34 @@ namespace Game1
                         }
                     }
                 }
-                    /*
-                else
+                // Update objects
+                if (m_objects[i].active)
                 {
-                    for (int a = 0; a < m_objects.Count; a++)
+                    m_objects[i].Update(gameTime);
+                }
+                /*
+            else
+            {
+                for (int a = 0; a < m_objects.Count; a++)
+                {
+                    if (a != i)
                     {
-                        if (a != i)
+                        if (_2DUtil.CheckCollision(m_objects[i], m_objects[a]))
                         {
-                            if (_2DUtil.CheckCollision(m_objects[i], m_objects[a]))
-                            {
-                                m_objects[i].AddCollisionEvent(m_objects[a]);
-                                m_objects[a].AddCollisionEvent(m_objects[i]);
-                                //m_objects[i].pos2D = new Vector2(m_objects[i].lastPosNoCol.X, m_objects[i].lastPosNoCol.Y);
-
-                            }
-
+                            m_objects[i].AddCollisionEvent(m_objects[a]);
+                            m_objects[a].AddCollisionEvent(m_objects[i]);
+                            //m_objects[i].pos2D = new Vector2(m_objects[i].lastPosNoCol.X, m_objects[i].lastPosNoCol.Y);
 
                         }
+
+
                     }
                 }
-                */
+            }
+            */
 
-                
-                
+
+
             }
 
 

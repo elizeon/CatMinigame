@@ -19,7 +19,7 @@ namespace Game1
 
                 base.Render(sprBatch);
                 //Render2D.Instance.DrawRectangle(sprBatch, viewCone[0], Color.White);
-                Render2D.Instance.DrawRectangle(sprBatch, new Rectangle((int)pos2D.X, (int)pos2D.Y, 10, 10), Color.White);
+                //Render2D.Instance.DrawRectangle(sprBatch, new Rectangle((int)pos2D.X, (int)pos2D.Y, 10, 10), Color.White);
             }
         }
 
@@ -42,7 +42,7 @@ namespace Game1
             }
             if (istate == EnemyState.chasing)
             {
-                m_moveSpeed = 0.5f;
+                m_moveSpeed = 2f;
             }
         }
 
@@ -51,7 +51,6 @@ namespace Game1
 
         public Enemy(string newid, string newtype, float newhp) : base(newid, newtype, newhp)
         {
-            SetEnemyState(EnemyState.patrolling);
             viewRange = new Vector2(200, 100);
         }
 
@@ -117,6 +116,7 @@ namespace Game1
             
             for (int i = 0; i < collisionEvents.Count; i++)
             {
+
                 ProcessCollisionEventEnemy(gameTime, collisionEvents.Dequeue());
             }
 
@@ -202,7 +202,7 @@ namespace Game1
 
                     Vector2 dir = new Vector2(direction.X,direction.Y);
                     dir.Normalize();
-                    Vector2 viewOrigin = new Vector2(pos2D.X + (viewRange.X* dir.X)/2, pos2D.Y + (viewRange.Y* dir.Y)/2);
+                    Vector2 viewOrigin = new Vector2(pos2D.X + (viewRange.X* dir.X)/2, pos2D.Y + (viewRange.Y* dir.Y));
                     OBB view = new OBB(viewOrigin,rotation,new Vector2(viewRange.X,viewRange.Y));
 
                     /*

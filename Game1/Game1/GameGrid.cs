@@ -11,7 +11,7 @@ namespace Game1
     /// <summary>
     /// The layout of the game world on screen.
     /// </summary>
-    class GameGrid
+    public class GameGrid
     { 
         vec2[,] centrePoints;
         /// <summary>
@@ -34,6 +34,7 @@ namespace Game1
 
         }
 
+        /*
         /// <summary>
         /// Returns point in centre of chosen grid square.
         /// </summary>
@@ -41,10 +42,12 @@ namespace Game1
         /// <param name="y"></param>
         /// <returns></returns>
 
-        vec2 GetPoint(int x, int y)
+        Vector2 GetPoint(int x, int y)
         {
-            return new vec2(centrePoints[x,y].x, centrePoints[x,y].y);
+            return new Vector2(centrePoints[x,y].x, centrePoints[x,y].y);
         }
+
+        */
 
 
         /// <summary>

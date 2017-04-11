@@ -62,7 +62,7 @@
     <Compile Include="Render.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Table.cs" />
-    <Compile Include="Vectors.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>

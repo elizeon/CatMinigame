@@ -52,3 +52,13 @@ C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debu
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.exe
 C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.pdb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\obj\x86\Debug\Game1.csprojResolveAssemblyReference.cache
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\losescreen.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\winscreen.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\cursor.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\quendaspritesheet.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\cat_fluffy.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\completearea.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\startscreen.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\exit.xnb
+C:\Users\elizabeth\Documents\GitHub\CatMinigame\Game1\Game1\bin\Windows\x86\Debug\Content\Content\textures\grass.xnb

@@ -38,13 +38,13 @@ namespace Game1
         public static void MoveTowards(GameObject2D obj, Vector2 dest, float step)
         {
             Vector2 direction = Vector2.Normalize(dest - obj.pos2D);
-            obj.pos2D += direction * step;
+            obj.SetPos2D( obj.pos2D + direction * step);
 
             if (Distance(obj.pos2D, dest) <= step)
             {
                 //Console.WriteLine(obj.pos2D.X + "," + obj.pos2D.Y);
                 //Console.WriteLine(dest.X + "," + dest.Y);
-                obj.pos2D = new Vector2(dest.X,dest.Y);
+                obj.SetPos2D(new Vector2(dest.X, dest.Y));
 
                 PrintXnaVec(obj.pos2D);
             }
@@ -126,8 +126,8 @@ namespace Game1
 
         public static void ResolveCollision(GameObject2D obj1, GameObject2D obj2)
         {
-            obj1.pos2D = new Vector2(obj1.lastPosNoCol.X, obj1.lastPosNoCol.Y);
-            obj2.pos2D = new Vector2(obj2.lastPosNoCol.X, obj2.lastPosNoCol.Y);
+            obj1.SetPos2D( new Vector2(obj1.lastPosNoCol.X, obj1.lastPosNoCol.Y));
+            obj2.SetPos2D( new Vector2(obj2.lastPosNoCol.X, obj2.lastPosNoCol.Y));
         }
 
     }

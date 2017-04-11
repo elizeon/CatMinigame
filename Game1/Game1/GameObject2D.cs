@@ -33,26 +33,20 @@ namespace Game1
             {
                 defaultAnim = key;
             }
-            if (animSprite == null)
-            {
-                animSprite = sprite;
-            }
 
             if (animSprite != null)
             {
-
-                maxX = 0;
-                maxY = 0;
+                
                 for (int i = 0; i < animSpritesList.Count; i++)
                 {
-                    if (animSpritesList[i].width > maxX)
+                    if (animSpritesList[i].width * scale.X > maxX)
                     {
                         maxX = animSpritesList[i].width * scale.X;
 
                     }
-                    if (animSpritesList[i].width > maxY)
+                    if (animSpritesList[i].height * scale.Y > maxY)
                     {
-                        maxY = animSpritesList[i].width * scale.Y;
+                        maxY = animSpritesList[i].height * scale.Y;
 
                     }
 
@@ -130,11 +124,19 @@ namespace Game1
             //targetDirection = new Vector2(direction.X,direction.Y);
             rotation = 0;
             //targetRotation = 0;
-            
+
             //m_boundingBox = new Rectangle(-10000,-10000,1,1);
 
+            maxX = 0;
+            maxY = 0;
 
 
+
+        }
+
+        public override void SetPos2D(Vector2 newpos)
+        {
+            base.SetPos2D(newpos);
         }
 
         public float rotation { get; protected set; }
@@ -285,7 +287,7 @@ namespace Game1
                 if (animSprite != null)
                 {
                     animSprite.Draw(sprBatch, new Vector2(pos2D.X-(spriteSize.X)/2,pos2D.Y-(spriteSize.Y)/2), rotation, scale);
-                    Render2D.Instance.DrawRectangle(sprBatch, boundingBox, Color.White);
+                    //Render2D.Instance.DrawRectangle(sprBatch, boundingBox, Color.White);
 
                 }
             }
@@ -350,15 +352,40 @@ namespace Game1
         }
 
         /// <summary>
+        /// Creates custom bounding box centred on the objects current origin.
+        /// Note the bounding box will not move with the object.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void SetCustomBoundingBoxFromOrigin(float iwidth, float iheight)
+        {
+            SetCustomBoundingBox(new Rectangle((int)(pos2D.X - iwidth / 2), (int)(pos2D.Y - iheight / 2), (int)(iwidth), (int)(iheight)));
+           
+        }
+
+
+        /// <summary>
         /// TODO actually destroy object.
         /// </summary>
-        public void TriggerDeath()
+        public virtual void TriggerDeath()
         {
             Console.WriteLine(id + " died.");
             visible = false;
             collisions = false;
             active = false;
             SetCustomBoundingBox( default(Rectangle));
+        }
+
+        /// <summary>
+        /// Returns the object to life. Any custom bounding box will be erased and must be re-assigned.
+        /// </summary>
+        public virtual void TriggerLife()
+        {
+            Console.WriteLine(id + " returned to life.");
+            visible = true;
+            collisions = true;
+            active = true;
+            usingCustomBBox = false;
         }
 
 

@@ -19,7 +19,10 @@ namespace Game1
     /// </summary>
     public class Game1 : Game
     {
-        
+
+
+        public static MouseState mouseState;
+        public static KeyboardState keyState;
 
         // Content directories
 
@@ -33,7 +36,7 @@ namespace Game1
 
 
         // Player vars
-        float moveSpeed = 0.1f;
+        //float moveSpeed = 0.1f;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -53,13 +56,22 @@ namespace Game1
         private static Player m_player = new Player("player","player",10);
         
         Scene m_scene1 = new Scene();
+        Scene m_scene2 = new Scene();
+        Scene m_scene3 = new Scene();
+        Scene m_winScene = new Scene();
+        Scene m_loseScene = new Scene();
 
-        GameGrid m_grid;
+        static GameGrid m_grid;
         Texture2D testSprite;
 
         // Textures
         Table<string, Texture2D> m_textures;
-        
+
+
+        int m_currentScene = 0;
+        List<Scene> m_scenes = new List<Scene>();
+        public static GameGrid gameGrid { get { return m_grid; } }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -67,6 +79,35 @@ namespace Game1
         }
         
         string[] m_texArray;
+
+        public void EnterScene(int scn)
+        {
+
+            switch(scn)
+            {
+
+                case 0:
+                    Level1Init();
+                    
+                    break;
+                case 1:
+                    Level2Init();
+                    break;
+                case 2:
+                    Level3Init();
+                    break;
+                case 3:
+                    LoseSceneInit();
+                    break;
+                case 4:
+                    WinSceneInit();
+                    break;
+
+            }
+
+            m_currentScene = scn;
+
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -86,18 +127,25 @@ namespace Game1
 
             m_screenHeight = GraphicsDevice.Viewport.Bounds.Height;
             m_screenWidth = GraphicsDevice.Viewport.Bounds.Width;
-
             m_grid = new GameGrid(10, 10, 0.1f);
+            
+            
             // Load textures.
             // Load textures.
             m_texArray = new string[]
                 {
                     "player",
                     "abc",
-                    "quendaspritesheet1",
-                    "quendaspritesheet2",
                     "bush",
-                    "whitepixel"
+                    "whitepixel",
+                    "winscreen",
+                    "losescreen",
+                    "cursor",
+                    "quendaspritesheet",
+                    "cat_fluffy",
+                    "exit",
+                    "completearea",
+                    "grass"
                 };
             m_textures = LoadTextures(m_texArray, texDir);
 
@@ -106,119 +154,22 @@ namespace Game1
             whiteTex = m_textures.Get(texDir + "whitepixel");
 
 
-
+            m_cursorTex = m_textures.Get(texDir + "cursor");
 
             testSprite = m_textures.Get(texDir + "abc");
 
-           
 
 
-            // Scene 1 init
-            Texture2D quendaSpritesLR = m_textures.Get(texDir + "quendaspritesheet1");
-            Texture2D quendaSpritesUD = m_textures.Get(texDir + "quendaspritesheet2");
-            AnimatedSprite playerRunUp = new AnimatedSprite(quendaSpritesUD, 1, 4);
-            AnimatedSprite playerRunLeft = new AnimatedSprite(quendaSpritesLR, 5, 2, 0, 5);
-            playerRunLeft.FlipHorizontal(true);
-            AnimatedSprite playerRunDown = new AnimatedSprite(quendaSpritesUD, 1, 4);
-            playerRunDown.FlipVertical(true);
-            AnimatedSprite playerRunRight = new AnimatedSprite(quendaSpritesLR, 5, 2, 0, 5);
+            GlobalObjectsInit();
 
-            m_player.scale = new Vector2(0.1f, 0.1f);
-            AnimatedSprite playerIdle = new AnimatedSprite(m_textures.Get(texDir + "quendaspritesheet1"), 5, 2, 0, 1);
-
-            m_player.AddAnimSprite("runUp", playerRunUp);
-            m_player.AddAnimSprite("runLeft", playerRunLeft);
-            m_player.AddAnimSprite("runDown", playerRunDown);
-            m_player.AddAnimSprite("runRight", playerRunRight);
-            m_player.AddAnimSprite("idle", playerIdle);
-            m_player.SetAnim("idle");
-            m_player.defaultAnim = "idle";
-            m_player.pos2D = m_grid.GetPoint(0.5f, 0.5f);
-
-            m_scene1.AddObject(m_player);
-
-            Enemy m_testEnemy = new Enemy("enemy1", "enemy", 10);
-            //m_testEnemy.collisions = false;
-
-            AnimatedSprite enemyIdle = new AnimatedSprite(quendaSpritesUD, 1, 4);
-
-
-            m_testEnemy.scale = new Vector2(0.1f, 0.1f);
-            m_testEnemy.AddAnimSprite("idle", enemyIdle);
-            m_testEnemy.SetAnim("idle");
-            m_testEnemy.defaultAnim = "idle";
-            m_testEnemy.pos2D = m_grid.GetPoint(0.2f, 0.2f);
+            EnterScene(0);
             
 
-            List<Vector2> patrolPath = new List<Vector2>();
-            patrolPath.Add(m_grid.GetPoint(0.1f, 0.1f));
-            patrolPath.Add(m_grid.GetPoint(0.1f, 0.5f));
-            patrolPath.Add(m_grid.GetPoint(0.2f, 0.3f));
-            patrolPath.Add(m_grid.GetPoint(0.5f, 0.7f));
-            patrolPath.Add(m_grid.GetPoint(0.6f, 0.7f));
-            patrolPath.Add(m_grid.GetPoint(0.9f, 0.8f));
-            m_testEnemy.patrolPath = patrolPath;
-            m_testEnemy.StartPatrol(0);
-            m_testEnemy.SetEnemyState(Enemy.EnemyState.patrolling);
-
-            m_scene1.AddObject(m_testEnemy);
-
-
-            //GameObject2D m_collisionTest = new GameObject2D("col", "col", 0);
-
-            HideLoc m_bush1 = new HideLoc("bush1", "hideloc", 0);
-            HideLoc m_bush2 = new HideLoc("bush2", "hideloc", 0);
-            HideLoc m_bush3 = new HideLoc("bush3", "hideloc", 0);
-            HideLoc m_bush4 = new HideLoc("bush4", "hideloc", 0);
-            HideLoc m_bush5 = new HideLoc("bush5", "hideloc", 0);
-
-            Texture2D bush2D = m_textures.Get(texDir + "bush");
-            AnimatedSprite bush = new AnimatedSprite(bush2D);
-            m_bush1.AddAnimSprite("idle", bush);
-            m_bush1.scale = new Vector2(2f, 2f);
-            m_bush1.SetAnim("idle");
-
-            m_bush1.pos2D = m_grid.GetPoint(0.9f, 0.2f);
-
-            m_bush2 = new HideLoc("bush2", m_bush1);
-            m_bush2.pos2D = m_grid.GetPoint(0.9f, 0.9f);
-
-            m_bush3 = new HideLoc("bush3", m_bush1);
-            m_bush3.pos2D = m_grid.GetPoint(0.4f, 0.7f);
-
-            m_bush4 = new HideLoc("bush4", m_bush1);
-            m_bush4.pos2D = m_grid.GetPoint(0.7f, 0.2f);
-       
-            m_bush5 = new HideLoc("bush5", m_bush1);
-            m_bush5.pos2D = m_grid.GetPoint(0.3f, 0.56f);
-
-            
-            m_scene1.AddObject(m_bush1);
-            m_scene1.AddObject(m_bush2);
-            m_scene1.AddObject(m_bush3);
-            m_scene1.AddObject(m_bush4);
-            m_scene1.AddObject(m_bush5);
-            
-            //m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamageStop);
-            m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamageStop);
-            GameObject2D m_end = new GameObject2D("end", "end");
-            m_end.pos2D = m_grid.GetPoint(0.99f, 0.5f);
-            //m_end.SetCustomBoundingBox(new Rectangle(new Point((int)m_end.pos2D.X, (int)m_end.pos2D.X), new Point((int)m_end.pos2D.X + 100, (int)m_end.pos2D.X + 100)));
-            m_player.AddCollisionTrigger(m_end, PassLevel);
-
-            //m_player.AddCollisionTrigger("hideloc", PlayerHides);
-
-            // m_player.AddCollisionTrigger(m_testEnemy, OtherTakesDamage);
-
-            //m_testEnemy.AddCollisionTrigger(m_player, EnemyHitsPlayer);
-
-            GameObject2D m_go1 = new GameObject2D("colTest", "colTest");
-            m_go1.pos2D = m_grid.GetPoint(0.9f, 0.6f);
-            m_go1.AddAnimSprite("default", playerRunUp);
-            //m_scene1.AddObject(m_go1);
-
-
-
+            m_scenes.Add(m_scene1);
+            m_scenes.Add(m_scene2);
+            m_scenes.Add(m_scene3);
+            m_scenes.Add(m_loseScene);
+            m_scenes.Add(m_winScene);
 
 
             m_textures = LoadTextures(m_texArray, texDir);
@@ -240,17 +191,12 @@ namespace Game1
             }
         }
 
+
+
         void Win(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
         {
             Console.WriteLine("You have won!");
-        }
-
-        void OtherTakesDamage(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
-        {
-
-            Console.WriteLine("Collision event triggered: Player hit enemy.");
-            
-            other.RegisterHit(gameTime, 10);
+            EnterScene(4);
         }
 
         void OtherTakesDamageStop(GameTime gameTime, Enemy thisobj, GameObject2D other)
@@ -260,6 +206,7 @@ namespace Game1
             Console.WriteLine("Collision event triggered: Player hit enemy.");
             other.RegisterHit(gameTime, 10);
             thisobj.SetEnemyState(Enemy.EnemyState.patrolling);
+            EnterScene(3);
         }
 
         /*
@@ -335,6 +282,8 @@ namespace Game1
         }
 
 
+        Texture2D m_cursorTex; 
+
         public float deltaTime { get; private set; }
         private float lastGameTime = 0;
         /// <summary>
@@ -344,25 +293,40 @@ namespace Game1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            
             Input.Update();
-            if(Input.keyState.IsKeyDown(Keys.Escape))
+            keyState = Input.keyState;
+            mouseState = Mouse.GetState();
+
+            if (m_currentScene == 3 || m_currentScene == 4)
+            {
+                if(keyState.IsKeyDown(Keys.R))
+                {
+                    Level1Init();
+                    Level2Init();
+                    Level3Init();
+                    m_currentScene = 0;
+                }
+            }
+
+
+            if(m_currentScene<m_scenes.Count)
+            {
+
+                m_scenes[m_currentScene].Update(gameTime);
+                deltaTime = gameTime.ElapsedGameTime.Milliseconds - lastGameTime;
+                lastGameTime = gameTime.ElapsedGameTime.Milliseconds;
+
+
+            }
+            else
             {
                 Exit();
             }
-            //m_player.Update(gameTime);
-
-
-
-            deltaTime = gameTime.ElapsedGameTime.Milliseconds - lastGameTime;
-            lastGameTime = gameTime.ElapsedGameTime.Milliseconds;
-
-            m_scene1.Update(gameTime);
-
-
-
-
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-               // Exit();
+            if (keyState.IsKeyDown(Keys.Escape))
+            {
+                Exit();
+            }
 
             base.Update(gameTime);
 
@@ -378,15 +342,194 @@ namespace Game1
             spriteBatch.Begin();
 
             base.Draw(gameTime);
+            
 
-            //m_player.Render(spriteBatch);
-            m_scene1.Render(spriteBatch);
+            m_scenes[m_currentScene].Render(spriteBatch);
+            Render2D.Instance.DrawSpriteAtLocation(spriteBatch, m_cursorTex, new Vector2(mouseState.Position.X+m_cursorTex.Width/2,mouseState.Position.Y+m_cursorTex.Height/2), 0, new Vector2(0.6f, 0.6f));
 
 
             spriteBatch.End();
         }
+
+        HideLoc m_bush1 = new HideLoc("bush1", "hideloc", 0);
+        HideLoc m_bush2 = new HideLoc("bush2", "hideloc", 0);
+        HideLoc m_bush3 = new HideLoc("bush3", "hideloc", 0);
+        HideLoc m_bush4 = new HideLoc("bush4", "hideloc", 0);
+        HideLoc m_bush5 = new HideLoc("bush5", "hideloc", 0);
+        Enemy m_testEnemy = new Enemy("enemy1", "enemy", 10);
+        GameObject2D m_end = new GameObject2D("end", "end");
+
+        AnimatedSprite m_enemyIdle;
+        AnimatedSprite m_enemyWalk;
+
+        Texture2D m_quendaSpritesUD;
+        AnimatedSprite m_playerRunUp;
+        AnimatedSprite m_playerIdle;
+        Texture2D m_bush2D;
+
+        AnimatedSprite m_winScreen;
+        AnimatedSprite m_loseScreen;
+        AnimatedSprite m_endspr;
+
+        AnimatedSprite m_grass;
+        GameObject2D m_grassObj;
+        void GlobalObjectsInit()
+        {
+
+            m_quendaSpritesUD = m_textures.Get(texDir + "quendaspritesheet");
+            m_playerRunUp = new AnimatedSprite(m_quendaSpritesUD, 1, 5);
+            m_playerIdle = new AnimatedSprite(m_quendaSpritesUD, 1, 5, 4, 5);
+            m_bush2D = m_textures.Get(texDir + "bush");
+            Texture2D texcat = m_textures.Get(texDir + "cat_fluffy");
+            m_enemyWalk = new AnimatedSprite(texcat, 8, 12,48,51);
+            m_enemyWalk.FlipVertical(true);
+            m_enemyWalk.playSpeed = 0.5f;
+
+
+
+
+            m_player.scale = new Vector2(1f, 1f);
+
+            m_player.AddAnimSprite("runUp", m_playerRunUp);
+            m_player.AddAnimSprite("idle", m_playerIdle);
+            m_player.SetAnim("idle");
+            m_player.defaultAnim = "idle";
+
+            //m_testEnemy.collisions = false;
+
+
+
+            m_testEnemy.scale = new Vector2(1f, 1.5f);
+            m_testEnemy.AddAnimSprite("walk", m_enemyWalk);
+            m_testEnemy.SetAnim("walk");
+            m_testEnemy.defaultAnim = "walk";
+
+            m_winScreen = new AnimatedSprite(m_textures.Get(texDir + "winscreen"), 1, 1);
+            m_loseScreen = new AnimatedSprite(m_textures.Get(texDir + "losescreen"), 1, 1);
+            
+
+            AnimatedSprite bush = new AnimatedSprite(m_bush2D);
+            m_bush1.AddAnimSprite("idle", bush);
+            m_bush1.scale = new Vector2(0.5f, 0.5f);
+            m_bush1.SetAnim("idle");
+
+
+            m_bush2.AddAnimSprite("idle", bush);
+            m_bush2.scale = new Vector2(0.5f, 0.5f);
+            m_bush2.SetAnim("idle");
+
+            m_bush3 = new HideLoc("bush3", m_bush1);
+            m_bush3.SetAnim("idle");
+
+            m_bush4 = new HideLoc("bush4", m_bush1);
+            m_bush4.SetAnim("idle");
+
+            m_bush5 = new HideLoc("bush5", m_bush1);
+            m_bush5.SetAnim("idle");
+
+            m_player.AddCollisionTrigger(m_end, PassLevel);
+            m_testEnemy.AddCollisionTrigger(m_player, OtherTakesDamageStop);
+            m_endspr = new AnimatedSprite(m_textures.Get(texDir + "exit"));
+
+            m_grass = new AnimatedSprite(m_textures.Get(texDir + "grass"));
+            m_grassObj = new GameObject2D("grass", "grass");
+            m_grassObj.AddAnimSprite("grass", m_grass);
+            m_grassObj.SetAnim("grass");
+            m_grassObj.SetPos2D(m_grid.GetPoint(0.5f, 0.5f));
+
+            m_grassObj.scale = new Vector2(screenWidth / (m_grass.texture.Width), screenHeight / (m_grass.texture.Height));
+        }
+        
+        
+        void Level1Init()
+        {
+            m_scene1 = new Scene();
+
+            
+            m_player.TriggerLife();
+
+            m_scene1.AddObject(m_grassObj);
+
+            m_bush1.SetPos2D(m_grid.GetPoint(0.9f, 0.2f));
+            m_bush2.SetPos2D(   m_grid.GetPoint(0.9f, 0.9f));
+            m_bush3.SetPos2D(   m_grid.GetPoint(0.4f, 0.7f));
+            m_bush4.SetPos2D(   m_grid.GetPoint(0.7f, 0.2f));
+            m_bush5.SetPos2D(   m_grid.GetPoint(0.3f, 0.56f));
+
+
+            m_scene1.AddObject(m_player);
+            m_player.SetPos2D( m_grid.GetPoint(0.5f, 0.5f));
+
+
+            m_testEnemy.SetPos2D(m_grid.GetPoint(0.2f, 0.2f));
+            List<Vector2> patrolPath = new List<Vector2>();
+            patrolPath.Add(m_grid.GetPoint(0.1f, 0.1f));
+            patrolPath.Add(m_grid.GetPoint(0.1f, 0.5f));
+            patrolPath.Add(m_grid.GetPoint(0.2f, 0.3f));
+            patrolPath.Add(m_grid.GetPoint(0.5f, 0.7f));
+            patrolPath.Add(m_grid.GetPoint(0.6f, 0.7f));
+            patrolPath.Add(m_grid.GetPoint(0.9f, 0.8f));
+            m_testEnemy.patrolPath = patrolPath;
+            m_testEnemy.SetEnemyState(Enemy.EnemyState.patrolling);
+            m_testEnemy.StartPatrol(0);
+            
+
+            m_scene1.AddObject(m_testEnemy);
+            
+            m_scene1.AddObject(m_bush1);
+            m_scene1.AddObject(m_bush2);
+            m_scene1.AddObject(m_bush3);
+            m_scene1.AddObject(m_bush4);
+            m_scene1.AddObject(m_bush5);
+            
+            m_end.SetPos2D( m_grid.GetPoint(0.99f, 0.5f));
+            Vector2 pointa = m_grid.GetPoint(0.9f, 0.01f);
+            Vector2 pointb = m_grid.GetPoint(0.99f, 0.99f);
+            m_end.SetCustomBoundingBox(new Rectangle((int)pointa.X, (int)pointa.Y, (int)(pointb.X - pointa.X), (int)(pointb.Y - pointa.Y)));
+            m_end.AddAnimSprite("default", m_endspr);
+            m_end.SetAnim("default");
+            m_end.scale = new Vector2(1.5f, 1f);
+
+            m_scene1.AddObject(m_end);
+            
+            //m_scene1.AddObject(m_go1);
+
+        }
+
         
 
+        void Level2Init()
+        {
+            
+        }
+
+        void Level3Init()
+        {
+
+            
+
+        }
+
+
+        void LoseSceneInit()
+        {
+            GameObject2D loseScreen = new GameObject2D("loseScreen","UI");
+            loseScreen.AddAnimSprite("default", m_loseScreen);
+            loseScreen.SetAnim("default");
+            loseScreen.SetPos2D(   m_grid.GetPoint(0.5f, 0.5f));
+            m_loseScene.AddObject(loseScreen);
+            
+        }
+
+        void WinSceneInit()
+        {
+            GameObject2D winScreen = new GameObject2D("winScreen", "UI");
+            winScreen.AddAnimSprite("default", m_winScreen);
+            winScreen.SetAnim("default");
+            //winScreen.scale = new Vector2(2, 2);
+            winScreen.SetPos2D( m_grid.GetPoint(0.5f, 0.5f));
+            m_winScene.AddObject(winScreen);
+        }
 
     }
 }
