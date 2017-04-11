@@ -76,7 +76,10 @@ namespace Game1
 
             for (int i = 0; i < collisionEvents.Count; i++)
             {
-                var val = collisionEvents.Dequeue();
+                var val = collisionEvents[i];
+
+                ProcessCollisionEventPlayer(gameTime, val);
+
                 switch (val.type)
                 {
                     case "hideloc":
@@ -84,24 +87,8 @@ namespace Game1
                             tohide = true;
                             break;
                         }
-                    case "enemy":
-                        {
-                            //TriggerDeath();
-                            break;
-                        }
-                        /*
-                    case "enemy":
-                        {
-                            RegisterHit(gameTime,10);
-                            val.
-                            break;
-                        }*/
-
                 }
-
-
-
-                toReturn.Add(val);
+                
             }
 
             if (tohide)
@@ -113,17 +100,13 @@ namespace Game1
                 hiding = false;
             }
 
-            for (int i = 0; i < toReturn.Count; i++)
+            for (int i = 0; i < collisionEvents.Count; i++)
             {
-                collisionEvents.Enqueue(toReturn[i]);
+                
             }
 
             base.Update(gameTime);
 
-            for (int i = 0; i < collisionEvents.Count; i++)
-            {
-                ProcessCollisionEventPlayer(gameTime, collisionEvents.Dequeue());
-            }
             // Player input
 
             var state = Game1.keyState;

@@ -117,7 +117,7 @@ namespace Game1
             for (int i = 0; i < collisionEvents.Count; i++)
             {
 
-                ProcessCollisionEventEnemy(gameTime, collisionEvents.Dequeue());
+                ProcessCollisionEventEnemy(gameTime, collisionEvents[i]);
             }
 
             //pos2D +=  new Vector2(10,0);

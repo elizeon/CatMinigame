@@ -61,6 +61,9 @@ namespace Game1
                 {
                     m_objects[i].Update(gameTime);
                 }
+
+
+                m_objects[i].ClearCollisionEvents();
                 /*
             else
             {

@@ -155,8 +155,8 @@ namespace Game1
         public Vector2 scale { get { return m_scale; } set { m_scale = value; } }
 
         
-        private Queue<GameObject2D> m_collisionEvents = new Queue<GameObject2D>();
-        public Queue<GameObject2D> collisionEvents { get { return m_collisionEvents; } }
+        private List<GameObject2D> m_collisionEvents = new List<GameObject2D>();
+        public List<GameObject2D> collisionEvents { get { return m_collisionEvents; } }
 
         public const int COLTRIGGERSIZE = 1000;
         Table<GameObject2D, Action<GameTime, GameObject2D, GameObject2D>> collisionTriggers = new Table<GameObject2D, Action<GameTime, GameObject2D, GameObject2D>>(COLTRIGGERSIZE);
@@ -178,7 +178,7 @@ namespace Game1
 
         public void AddCollisionEvent(GameObject2D obj)
         {
-            m_collisionEvents.Enqueue(obj);
+            m_collisionEvents.Add(obj);
         }
 
         public void ProcessCollisionEvent(GameTime gameTime, GameObject2D otherObj)
@@ -226,10 +226,11 @@ namespace Game1
             {
             */
             animSprite.Update(gameTime);
-                for (int i = 0; i < m_collisionEvents.Count; i++)
-                {
-                    ProcessCollisionEvent(gameTime, m_collisionEvents.Dequeue());
-                }
+
+            for (int i = 0; i < m_collisionEvents.Count; i++)
+            {
+                ProcessCollisionEvent(gameTime, m_collisionEvents[i]);
+            }
             //}
             
 
@@ -388,6 +389,10 @@ namespace Game1
             usingCustomBBox = false;
         }
 
+        public void ClearCollisionEvents()
+        {
+            m_collisionEvents = new List<GameObject2D>();
+        }
 
 
 
