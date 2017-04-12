@@ -38,7 +38,7 @@ namespace Game1
         Enemy m_testEnemy = new Enemy("enemy1", "enemy", 10);
         GameObject2D m_end = new GameObject2D("end", "end");
 
-
+        public static  bool levelStart { get; set; }
         // Content directories
 
         /// <summary>
@@ -142,6 +142,7 @@ namespace Game1
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
         }
 
 
@@ -158,6 +159,8 @@ namespace Game1
             Console.WriteLine("Initialising...");
 
             base.Initialize();
+
+            levelStart = false;
             /*
             graphics.PreferredBackBufferHeight=500;
             graphics.PreferredBackBufferWidth=1000;
@@ -398,18 +401,15 @@ namespace Game1
 
         void PassLevel(GameTime gameTime, GameObject2D thisobj, GameObject2D other)
         {
-
             m_levelsPassed += 1;
             Console.WriteLine("You have completed level " + m_levelsPassed + " of "+m_totalLevels+"!");
 
             if (m_levelsPassed >= m_totalLevels)
             {
-                m_scenes[currentScene].ClearCollisionEvents();
                 Win(gameTime, thisobj, other);
             }
             else
             {
-                m_scenes[currentScene].ClearCollisionEvents();
                 EnterScene(6);
             }
         }
@@ -424,7 +424,6 @@ namespace Game1
 
         void OtherTakesDamageStop(GameTime gameTime, Enemy thisobj, GameObject2D other)
         {
-            m_scenes[currentScene].ClearCollisionEvents();
 
             //Console.WriteLine("Collision event triggered: Player hit enemy.");
             Console.WriteLine("Collision event triggered: Player hit enemy.");
@@ -571,6 +570,7 @@ namespace Game1
             m_scenes[currentScene].ClearCollisionEvents();
 
             Console.WriteLine("Scene " + scn + " loaded.");
+            levelStart = true;
 
             switch (scn)
             {
@@ -636,7 +636,7 @@ namespace Game1
 
 
 
-            m_testEnemy.scale = new Vector2(1f, 1.5f);
+            m_testEnemy.scale = new Vector2(1.5f, 1.5f);
             m_testEnemy.AddAnimSprite("walk", m_enemyWalk);
             m_testEnemy.SetAnim("walk");
             m_testEnemy.defaultAnim = "walk";
@@ -773,6 +773,7 @@ namespace Game1
             m_scene1.AddObject(m_end);
             m_scenes[0] = m_scene1;
 
+
         }
 
 
@@ -816,9 +817,9 @@ namespace Game1
             m_bush4.SetPos2D(m_grid.GetPoint(0.7f, 0.2f));
             m_bush5.SetPos2D(m_grid.GetPoint(0.3f, 0.56f));
 
-
-            m_scene2.AddObject(m_player);
             m_player.SetPos2D(m_grid.GetPoint(0.1f, 0.5f));
+            m_scene2.AddObject(m_player);
+            
 
 
             m_testEnemy.SetPos2D(m_grid.GetPoint(0.3f, 0.3f));

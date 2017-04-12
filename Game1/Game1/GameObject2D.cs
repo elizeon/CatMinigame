@@ -248,7 +248,23 @@ namespace Game1
 
             for (int i = 0; i < m_collisionEvents.Count; i++)
             {
-                ProcessCollisionEvent(gameTime, m_collisionEvents[i]);
+
+                if(m_collisionEvents[i].type == "end" && this.type == "player")
+                {
+                    if (!Game1.levelStart)
+                    {
+                        ProcessCollisionEvent(gameTime, m_collisionEvents[i]);
+
+                    }
+                }
+                else
+                {
+                    ProcessCollisionEvent(gameTime, m_collisionEvents[i]);
+
+                }
+
+
+
             }
             //}
             

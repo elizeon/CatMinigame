@@ -19,9 +19,7 @@ namespace Game1
 
                 base.Render(sprBatch);
 
-                Render2D.Instance.DebugSphere(sprBatch, pos2D, (int)viewDist);
-                //Render2D.Instance.DrawRectangle(sprBatch, viewCone[0], Color.White);
-                //Render2D.Instance.DrawRectangle(sprBatch, new Rectangle((int)pos2D.X, (int)pos2D.Y, 10, 10), Color.White);
+                //Render2D.Instance.DebugSphere(sprBatch, pos2D, (int)viewDist);
             }
         }
 

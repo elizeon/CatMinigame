@@ -12,7 +12,6 @@ namespace Game1
     {
         List<GameObject2D> m_objects = new List<GameObject2D>();
         //GameObject2D[] m_objects;
-        Enemy[] m_enemies; // May find unnecessary - if enemy update deals with everything
 
         float m_initTime = 0;
 
@@ -34,7 +33,7 @@ namespace Game1
 
         public void Render(SpriteBatch sprBatch)
         {
-            
+            //Game1.levelStart = false;
 
             for (int i=0;i<m_objects.Count;i++)
             {
@@ -66,9 +65,20 @@ namespace Game1
                             if (_2DUtil.CheckCollision(m_objects[i].boundingBox, m_objects[a].boundingBox))
                             {
                                 //_2DUtil.ResolveCollision(m_objects[i], m_objects[a]);
-                                m_objects[i].AddCollisionEvent(m_objects[a]);
-                                m_objects[a].AddCollisionEvent(m_objects[i]);
+
+                                if(!m_objects[i].collisionEvents.Contains(m_objects[a]))
+                                {
+                                    m_objects[i].AddCollisionEvent(m_objects[a]);
+
+                                }
+                                if (!m_objects[a].collisionEvents.Contains(m_objects[i]))
+                                {
+                                    m_objects[a].AddCollisionEvent(m_objects[i]);
+
+                                }
                                 //m_objects[i].pos2D = new Vector2(m_objects[i].lastPosNoCol.X, m_objects[i].lastPosNoCol.Y);
+
+
 
                             }
                             else
@@ -114,6 +124,8 @@ namespace Game1
 
             }
 
+
+            Game1.levelStart = false;
 
             
 

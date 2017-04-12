@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/textures/cat_fluffy.png</SourceFile>
-  <SourceTime>2017-04-10T20:56:19.776932+08:00</SourceTime>
+  <SourceTime>2017-04-12T13:10:55.5880676+08:00</SourceTime>
   <DestFile>C:/Users/elizabeth/Documents/GitHub/CatMinigame/Game1/Game1/Content/bin/Windows/Content/textures/cat_fluffy.xnb</DestFile>
-  <DestTime>2017-04-10T20:57:34.3521954+08:00</DestTime>
+  <DestTime>2017-04-12T13:11:02.8443026+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T23:05:36+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

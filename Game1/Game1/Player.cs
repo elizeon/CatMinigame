@@ -78,7 +78,11 @@ namespace Game1
             {
                 var val = collisionEvents[i];
 
-                ProcessCollisionEventPlayer(gameTime, val);
+                if(val.type != "end")
+                {
+                    ProcessCollisionEventPlayer(gameTime, val);
+
+                }
 
                 switch (val.type)
                 {
